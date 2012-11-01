@@ -1,0 +1,11 @@
+package clusterer;
+
+import java.util.Set;
+
+import clusterer.TreeBuilder.Node;
+
+public interface Node {
+	public double getDistance(Node otherNode);
+	public Double getAttributeValue(Node node);
+	public Set<? extends AbstractNode> getAttributeKeys();
+}

@@ -1,0 +1,5 @@
+package clusterer;
+
+public interface Node {
+
+}
