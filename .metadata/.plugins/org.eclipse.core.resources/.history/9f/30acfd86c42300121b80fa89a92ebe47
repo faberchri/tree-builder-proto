@@ -7,7 +7,7 @@ import java.util.Set;
 
 public abstract class AbstractNode implements Node, PrintableNode{
 	
-	public double getDistance(Node otherNode) {
+	private double getDistance(Node otherNode) {
 		Set<Node> union = new HashSet<Node>(this.getAttributeKeys());
 		union.addAll(otherNode.getAttributeKeys());
 		Set<Node> intersect = new HashSet<Node>(this.getAttributeKeys());

@@ -19,7 +19,7 @@ public abstract class AbstractNode implements Node, PrintableNode{
 		return 1.0 / (double)union.size() * summedRatingDiffs + ((double)union.size() - (double)intersect.size()) / (double)union.size();
 	}
 	
-	String getAttributesString(Map<? extends AbstractNode, Double> map) {
+	public String getAttributesString(Map<? extends AbstractNode, Double> map) {
 		String s = "";
 		for (Map.Entry<? extends AbstractNode, Double> entry : map.entrySet()) {
 			s = s.concat(entry.getKey().toString()).concat(": ").concat(entry.getValue().toString()).concat(";\t");

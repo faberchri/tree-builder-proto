@@ -1,2 +1,3 @@
-commit_dialog_history_messages=<?xml version\="1.0" encoding\="UTF-8"?>\n<messages>\n<message>eclipse project</message>\n</messages>
+commit_dialog_history_messages=<?xml version\="1.0" encoding\="UTF-8"?>\n<messages>\n<message>Refactoring into multiple class files and packages</message>\n<message>eclipse project</message>\n</messages>
 eclipse.preferences.version=1
+resourcehistory_show_all_branches=true
