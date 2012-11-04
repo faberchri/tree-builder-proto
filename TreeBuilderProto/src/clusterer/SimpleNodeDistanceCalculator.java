@@ -1,0 +1,22 @@
+package clusterer;
+
+import java.util.HashSet;
+import java.util.Set;
+
+public class SimpleNodeDistanceCalculator implements NodeDistanceCalculator {
+
+	@Override
+	public double calculateDistance(Node n1, Node n2) {
+		Set<Node> union = new HashSet<Node>(n1.getAttributeKeys());
+		union.addAll(n2.getAttributeKeys());
+		Set<Node> intersect = new HashSet<Node>(n1.getAttributeKeys());
+		intersect.retainAll(n2.getAttributeKeys());
+		double summedRatingDiffs = 0.0;
+		for (Node userNode : intersect) {
+			summedRatingDiffs = Math.abs(n1.getAttributeValue(userNode) - n2.getAttributeValue(userNode));
+		}
+		return 1.0 / (double)union.size() * summedRatingDiffs + ((double)union.size() - (double)intersect.size()) / (double)union.size();
+
+	}
+
+}

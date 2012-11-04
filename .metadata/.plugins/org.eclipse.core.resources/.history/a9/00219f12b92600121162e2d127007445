@@ -1,0 +1,6 @@
+package clusterer;
+
+public interface NodeDistanceCalculator {
+
+	public static double calculateDistance(Node n1, Node n2);
+}

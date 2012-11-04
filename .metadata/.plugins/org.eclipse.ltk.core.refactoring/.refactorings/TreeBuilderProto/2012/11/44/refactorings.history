@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename type &apos;clusterer.NodeDistanceComparator&apos; to &apos;NodeDistanceCalculator&apos;&#x0A;- Original project: &apos;TreeBuilderProto&apos;&#x0A;- Original element: &apos;clusterer.NodeDistanceComparator&apos;&#x0A;- Renamed element: &apos;clusterer.NodeDistanceCalculator&apos;&#x0A;- Update references to refactored element&#x0A;- Rename similarly named elements&#x0A;- Update fully qualified names in &apos;*&apos; files&#x0A;- Update textual occurrences in comments and strings" description="Rename type &apos;NodeDistanceComparator&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.type" input="/src&lt;clusterer{NodeDistanceComparator.java[NodeDistanceComparator" matchStrategy="1" name="NodeDistanceCalculator" patterns="*" qualified="true" references="true" similarDeclarations="true" stamp="1352058114958" textual="true" version="1.0"/>
+</session>

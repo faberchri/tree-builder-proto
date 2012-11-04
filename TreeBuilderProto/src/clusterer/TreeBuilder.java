@@ -51,16 +51,17 @@ public final class TreeBuilder {
 	}
 	
 	private void initNodes() {
+		NodeDistanceCalculator ndc = new SimpleNodeDistanceCalculator();
 		// create UserNode objects
 		List<UserNode> users = new ArrayList<UserNode>();
 		for (int i = 0; i < randomMatrix[0].length; i++) {
-			users.add(new UserNode());
+			users.add(new UserNode(ndc));
 		}
 		
 		// create MovieNode objects
 		List<MovieNode> movies = new ArrayList<MovieNode>();
 		for (int i = 0; i < randomMatrix.length; i++) {
-			movies.add(new MovieNode());
+			movies.add(new MovieNode(ndc));
 		}
 		
 		// add movieNodes to userNodes

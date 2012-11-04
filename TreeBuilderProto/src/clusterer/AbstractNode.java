@@ -7,16 +7,14 @@ import java.util.Set;
 
 public abstract class AbstractNode implements Node, PrintableNode{
 	
+	private NodeDistanceCalculator distanceCalculator;
+	
+	public AbstractNode(NodeDistanceCalculator ndc) {
+		this.distanceCalculator = ndc; 
+	}
+	
 	public double getDistance(Node otherNode) {
-		Set<Node> union = new HashSet<Node>(this.getAttributeKeys());
-		union.addAll(otherNode.getAttributeKeys());
-		Set<Node> intersect = new HashSet<Node>(this.getAttributeKeys());
-		intersect.retainAll(otherNode.getAttributeKeys());
-		double summedRatingDiffs = 0.0;
-		for (Node userNode : intersect) {
-			summedRatingDiffs = Math.abs(this.getAttributeValue(userNode) - otherNode.getAttributeValue(userNode));
-		}
-		return 1.0 / (double)union.size() * summedRatingDiffs + ((double)union.size() - (double)intersect.size()) / (double)union.size();
+		return distanceCalculator.calculateDistance(this, otherNode);
 	}
 	
 	String getAttributesString(Map<? extends AbstractNode, Double> map) {

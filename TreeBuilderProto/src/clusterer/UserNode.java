@@ -11,7 +11,9 @@ final class UserNode extends AbstractNode implements Node {
 	private Map<MovieNode, Double> movies;
 	private final int id = userNodeId++;
 	
-	public UserNode() {		}
+	public UserNode(NodeDistanceCalculator ndc) {
+		super(ndc);
+	}
 	
 	public void setMovies(Map<MovieNode, Double> movies) {
 		this.movies = movies;
