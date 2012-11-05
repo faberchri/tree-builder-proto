@@ -13,7 +13,13 @@ public class SimpleNodeDistanceCalculator implements NodeDistanceCalculator {
 		intersect.retainAll(n2.getAttributeKeys());
 		double summedRatingDiffs = 0.0;
 		for (Node userNode : intersect) {
-			summedRatingDiffs = Math.abs(n1.getAttributeValue(userNode) - n2.getAttributeValue(userNode));
+			Double n1Av = (Double)n1.getAttributeValue(userNode);
+			Double n2Av = (Double)n2.getAttributeValue(userNode);
+			if(!(n1Av instanceof Double) 
+					|| !(n2Av instanceof Double)) {
+				return -1.0;			
+			}
+			summedRatingDiffs = Math.abs(n1Av - n2Av);
 		}
 		return 1.0 / (double)union.size() * summedRatingDiffs + ((double)union.size() - (double)intersect.size()) / (double)union.size();
 

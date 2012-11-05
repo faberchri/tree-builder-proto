@@ -4,26 +4,26 @@ import java.util.Map;
 import java.util.Set;
 
 
-final class UserNode extends AbstractNode implements Node {
+final class UserNode<T> extends AbstractNode<T> implements Node<T> {
 	
 	private static int userNodeId = 0;
 	
-	private Map<MovieNode, Double> movies;
+	private Map<MovieNode<T>, T> movies;
 	private final int id = userNodeId++;
 	
 	public UserNode(NodeDistanceCalculator ndc) {
 		super(ndc);
 	}
 	
-	public void setMovies(Map<MovieNode, Double> movies) {
+	public void setMovies(Map<MovieNode<T>, T> movies) {
 		this.movies = movies;
 	}
 	
-	public Set<MovieNode> getAttributeKeys() {
+	public Set<MovieNode<T>> getAttributeKeys() {
 		return movies.keySet();
 	}
 	
-	public Double getAttributeValue(Node node) {
+	public T getAttributeValue(Node<T> node) {
 		return movies.get(node);
 	}
 			
@@ -35,5 +35,12 @@ final class UserNode extends AbstractNode implements Node {
 	public String toString() {
 		return "UserNode".concat(" ").concat(String.valueOf(id));
 	}
+
+	@Override
+	public int getId() {
+		return id;
+	}
+
+
 	
 }

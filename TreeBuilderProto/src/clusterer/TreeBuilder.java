@@ -1,92 +1,71 @@
 package clusterer;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import client.Dataset;
 
-public final class TreeBuilder {
-	
-	private static final int NUM_OF_USERS = 15;
-	private static final int NUM_OF_MOVIES = 10;
 
-	Double[][] randomMatrix = new Double[NUM_OF_MOVIES][NUM_OF_USERS];
+public final class TreeBuilder<T> {
+		
+	private Set<UserNode<T>> userNodes = new HashSet<UserNode<T>>();	
+	private Set<MovieNode<T>> movieNodes = new HashSet<MovieNode<T>>();
 	
-	private Set<UserNode> userNodes = new HashSet<UserNode>();	
-	private Set<MovieNode> movieNodes = new HashSet<MovieNode>();
 	
-	
-	public TreeBuilder() {
-		initRandomMatrix();
-		initNodes();
+	public TreeBuilder(Dataset<T> dataset) {
+		initNodes(dataset);
 	}
-	
-	private void initRandomMatrix() {
-	    Random randomGenerator = new Random();
-		for (int i = 0; i < randomMatrix.length; i++) {
-			for (int j = 0; j < randomMatrix[0].length; j++) {
-				// high chance for null values
-				if (randomGenerator.nextInt() % 4 == 0) {
-					// we want to have rating values in the interval [0.0, 1.0] 
-					// rounded to one decimal digit.
-					randomMatrix[i][j] = ((double)randomGenerator.nextInt(11) / 10.0);
-
-				} else {
-					randomMatrix[i][j] = null;
-				}
-			}
-		}
-	}
-	
-	public void printRandomMatrix() {
-		for (int i = 0; i < randomMatrix.length; i++) {
-			for (int j = 0; j < randomMatrix[0].length; j++) {
-				System.out.print(randomMatrix[i][j] +  "\t| ");
-			}
-			System.out.println();
-		}
-	}
-	
-	private void initNodes() {
+		
+	private void initNodes(Dataset<T> dataset) {
 		NodeDistanceCalculator ndc = new SimpleNodeDistanceCalculator();
 		// create UserNode objects
-		List<UserNode> users = new ArrayList<UserNode>();
-		for (int i = 0; i < randomMatrix[0].length; i++) {
-			users.add(new UserNode(ndc));
+		List<UserNode<T>> users = new ArrayList<UserNode<T>>();
+		for (int i = 0; i < dataset.getNumberOfUsers(); i++) {
+			users.add(new UserNode<T>(ndc));
 		}
 		
 		// create MovieNode objects
-		List<MovieNode> movies = new ArrayList<MovieNode>();
-		for (int i = 0; i < randomMatrix.length; i++) {
-			movies.add(new MovieNode(ndc));
+		List<MovieNode<T>> movies = new ArrayList<MovieNode<T>>();
+		for (int i = 0; i < dataset.getNumberOfContentItems(); i++) {
+			movies.add(new MovieNode<T>(ndc));
 		}
 		
 		// add movieNodes to userNodes
-		for (int i = 0; i < randomMatrix[0].length; i++) {
-			Map<MovieNode, Double> attributes = new HashMap<MovieNode, Double>();
-			for (int j = 0; j < randomMatrix.length; j++) {
-				if (randomMatrix[j][i] != null) {
-					attributes.put(movies.get(j), randomMatrix[j][i]);
+		ListIterator<List<T>> it = dataset.iterateOverUsers();
+		while(it.hasNext()) {
+			Map<MovieNode<T>, T> attributes = new HashMap<MovieNode<T>, T>();
+			List<T> li = it.next();
+			for (int i = 0; i < li.size(); i++) {
+				if (li.get(i) != null) {					
+					attributes.put(movies.get(i), li.get(i));
 				}
 			}
-			users.get(i).setMovies(attributes);
-			userNodes.add(users.get(i));
+			users.get(it.previousIndex()).setMovies(attributes);
+			userNodes.add(users.get(it.previousIndex()));
 		}
 		
-		// add userNodes to movieNodes
-		for (int i = 0; i < randomMatrix.length; i++) {
-			Map<UserNode, Double> attributes = new HashMap<UserNode, Double>();
-			for (int j = 0; j < randomMatrix[0].length; j++) {
-				if (randomMatrix[i][j] != null) {
-					attributes.put(users.get(j), randomMatrix[i][j]);
+		// add userNodes to movieNodes		
+		it = dataset.iterateOverContentItems();
+		while(it.hasNext()) {
+			Map<UserNode<T>, T> attributes = new HashMap<UserNode<T>, T>();
+			List<T> li = it.next();
+			for (int i = 0; i < li.size(); i++) {
+				if (li.get(i) != null) {
+					attributes.put(users.get(i), li.get(i));
 				}
 			}
-			movies.get(i).setUsers(attributes);
-			movieNodes.add(movies.get(i));
+			movies.get(it.previousIndex()).setUsers(attributes);
+			movieNodes.add(movies.get(it.previousIndex()));
 		}
+		
 	}
 	
 	private Node[] getClosestNodes(Set<? extends Node> openNodes) {
@@ -112,7 +91,9 @@ public final class TreeBuilder {
 	private void printAllNodesInSet(Set<? extends PrintableNode> set, String nodeNames){
 		System.out.println("-----------------------");
 		System.out.println(nodeNames);
-		for (PrintableNode node : set) {
+		PrintableNode[] setArr = set.toArray(new PrintableNode[set.size()]);
+		Arrays.sort(setArr);
+		for (PrintableNode node : setArr) {
 			System.out.println(node.toString()+"|\t"+node.getAttributesString());
 		}
 		System.out.println("-----------------------");

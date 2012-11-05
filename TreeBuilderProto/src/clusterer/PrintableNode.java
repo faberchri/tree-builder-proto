@@ -1,5 +1,6 @@
 package clusterer;
 
-public interface PrintableNode{
+public interface PrintableNode extends Comparable<PrintableNode>{
 	public String getAttributesString();
+	public int getId();
 }

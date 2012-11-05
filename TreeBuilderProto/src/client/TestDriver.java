@@ -8,8 +8,10 @@ public class TestDriver {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		TreeBuilder treeBuilder = new TreeBuilder();
-		treeBuilder.printRandomMatrix();
+		RandomDataset ds = new RandomDataset();
+		ds.printRandomMatrix();
+		TreeBuilder<Double> treeBuilder = new TreeBuilder<Double>(ds);
+
 		treeBuilder.printAllOpenUserNodes();
 		treeBuilder.printAllOpenMovieNodes();
 		treeBuilder.getClosestOpenUserNodes();
