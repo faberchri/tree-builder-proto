@@ -1,0 +1,20 @@
+package client;
+
+import clusterer.TreeBuilder;
+
+public class TestDriver {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		RandomDataset ds = new RandomDataset();
+		TreeBuilder<Double> treeBuilder = new TreeBuilder<Double>(ds);
+		ds.printRandomMatrix();
+		treeBuilder.printAllOpenUserNodes();
+		treeBuilder.printAllOpenMovieNodes();
+		treeBuilder.getClosestOpenUserNodes();
+		treeBuilder.getClosestOpenMovieNodes();
+	}
+
+}

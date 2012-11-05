@@ -1,0 +1,5 @@
+package client;
+
+public interface Dataset <T>{
+	public Iterator<T> iterateOverDataset();
+}

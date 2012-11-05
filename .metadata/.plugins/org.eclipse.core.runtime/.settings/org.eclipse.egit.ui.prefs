@@ -1,4 +1,4 @@
-commit_dialog_history_messages=<?xml version\="1.0" encoding\="UTF-8"?>\n<messages>\n<message>modifier change</message>\n<message>Refactoring into multiple class files and packages</message>\n<message>eclipse project</message>\n</messages>
+commit_dialog_history_messages=<?xml version\="1.0" encoding\="UTF-8"?>\n<messages>\n<message>Node distance calculation factorized </message>\n<message>modifier change</message>\n<message>Refactoring into multiple class files and packages</message>\n<message>eclipse project</message>\n</messages>
 commit_dialog_push_upstream=true
 eclipse.preferences.version=1
 org.eclipse.egit.ui.githistorypage.showallfilter=SHOWALLREPO

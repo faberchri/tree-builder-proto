@@ -1,0 +1,27 @@
+package client;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+public class RandomDataset implements Dataset<Double> {
+
+	@Override
+	public Iterator<Double> iterateOverUser() {
+		
+		List li = new ArrayList();
+		li.iterator();
+		return null;
+	}
+	
+	@Override
+	public Iterator<Double> iterateOverContent() {
+		
+		List li = new ArrayList();
+		li.iterator();
+		return null;
+	}
+
+
+
+}

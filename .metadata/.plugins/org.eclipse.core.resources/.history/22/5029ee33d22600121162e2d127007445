@@ -1,0 +1,13 @@
+package client;
+
+public class RandomDataset implements Dataset<Double> {
+
+	@Override
+	public Double iterateOverDataset() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+}
