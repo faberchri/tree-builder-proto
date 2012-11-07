@@ -1,0 +1,8 @@
+package clusterer;
+
+import java.util.List;
+
+public abstract class AttributeFactory {
+	public abstract Attribute createAttribute(double  rating); // single node
+	public abstract Attribute createAttribute(List<Attribute> attributes); // group node
+}

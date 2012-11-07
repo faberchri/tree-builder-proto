@@ -1,0 +1,11 @@
+package clusterer;
+
+public class UserNodeFactory<T> extends NodeFactory<T> {
+
+	@Override
+	public Node<T> createNode() {
+		return new UserNodeFactory();
+	}
+
+	
+}

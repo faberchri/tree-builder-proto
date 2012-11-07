@@ -1,0 +1,58 @@
+package clusterer;
+
+import java.util.Map;
+import java.util.Set;
+
+
+final class UserNode<T> extends AbstractNode<T>  {
+	
+	private static int userNodeId = 0;
+	private static Factory nodeFactory = null;
+	
+	private Map<PrintableNode<T>, T> movies;
+	private final int id = userNodeId++;
+	
+	public UserNode(NodeDistanceCalculator ndc) {
+		super(ndc);
+	}
+	
+	public void setAttributes(Map<PrintableNode<T>, T> movies) {
+		this.movies = movies;
+	}
+	
+	public Set<Node<T>> getAttributeKeys() {
+		return movies.keySet();
+	}
+	
+	public T getAttributeValue(Node<T> node) {
+		return movies.get(node);
+	}
+			
+	public String getAttributesString() {
+		return getAttributesString((Map<PrintableNode<T>, T>)movies);
+	}
+	
+	@Override
+	public String toString() {
+		return "UserNode".concat(" ").concat(String.valueOf(id));
+	}
+
+	@Override
+	public int getId() {
+		return id;
+	}
+
+	@Override
+	public Factory<T> getNodeFactory() {
+		return nodeFactory;
+	}
+	
+	public static Factory getFactory() {
+		return nodeFactory;
+	}
+	
+	public static void setFactory(Factory factory) {
+		nodeFactory = factory;
+	}
+	
+}

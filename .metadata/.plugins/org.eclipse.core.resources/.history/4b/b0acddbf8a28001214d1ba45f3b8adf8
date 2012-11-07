@@ -1,0 +1,43 @@
+package clusterer;
+
+import java.util.List;
+
+public class Attribute {
+	private double average = 0.0;
+	private double stdDev = 0.0;
+	private int support = 0;
+	
+	public Attribute(double average) {
+		this.average = average;
+		this.stdDev = 0.0;
+		this.support = 0;
+	}
+	
+	
+	public Attribute(List<Attribute> attributesToCombine) {
+		double tmp = 0.0;
+		for (Attribute attribute : attributesToCombine) {
+			tmp += attribute.getAverage();
+		}
+		this.average = tmp / attributesToCombine.size();
+		tmp = 0.0;
+		for (Attribute attribute : attributesToCombine) {
+			this.support += attribute.getSupport();
+		}
+		this.average = average;
+		this.stdDev = 0.0;
+		this.support = 0;
+	}
+	
+	public double getAverage() {
+		return average;
+	}
+	
+	public double getStdDev() {
+		return stdDev;
+	}
+	
+	public int getSupport() {
+		return support;
+	}
+}

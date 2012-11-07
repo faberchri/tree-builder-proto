@@ -1,0 +1,11 @@
+package clusterer;
+
+public class ContentNodeFactory<T> extends NodeFactory<T> {
+	
+	
+	@Override
+	public MovieNode<T> createNode(MovieNode<T>[] mergeNodes) {
+		// TODO Auto-generated method stub
+		return super.createNode(mergeNodes);
+	}
+}

@@ -1,0 +1,128 @@
+package clusterer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+
+import client.Dataset;
+
+
+public final class TreeBuilder<T> {
+		
+	private Set<UserNode<T>> userNodes = new HashSet<UserNode<T>>();	
+	private Set<MovieNode<T>> movieNodes = new HashSet<MovieNode<T>>();
+		
+	private NodeFactory<T> factory;
+	
+	public TreeBuilder(Dataset<T> dataset) {
+		this.factory = new NodeFactory<T>(new SimpleNodeDistanceCalculator(), new SimpleNodeDistanceCalculator());
+		initLeafNodes(dataset);
+	}
+		
+	private void initLeafNodes(Dataset<T> dataset) {
+		NodeDistanceCalculator ndc = new SimpleNodeDistanceCalculator();
+		// create UserNode objects
+		List<UserNode<T>> users = factory.createEmptyUserNodes(dataset.getNumberOfUsers());
+		
+		// create MovieNode objects
+		List<MovieNode<T>> movies = factory.createEmptyContentNodes(dataset.getNumberOfContentItems());
+
+		
+		// add movieNodes to userNodes
+		ListIterator<List<T>> it = dataset.iterateOverUsers();
+		while(it.hasNext()) {
+			Map<MovieNode<T>, T> attributes = new HashMap<MovieNode<T>, T>();
+			List<T> li = it.next();
+			for (int i = 0; i < li.size(); i++) {
+				if (li.get(i) != null) {					
+					attributes.put(movies.get(i), li.get(i));
+				}
+			}
+			users.get(it.previousIndex()).setMovies(attributes);
+			userNodes.add(users.get(it.previousIndex()));
+		}
+		
+		// add userNodes to movieNodes		
+		it = dataset.iterateOverContentItems();
+		while(it.hasNext()) {
+			Map<UserNode<T>, T> attributes = new HashMap<UserNode<T>, T>();
+			List<T> li = it.next();
+			for (int i = 0; i < li.size(); i++) {
+				if (li.get(i) != null) {
+					attributes.put(users.get(i), li.get(i));
+				}
+			}
+			movies.get(it.previousIndex()).setUsers(attributes);
+			movieNodes.add(movies.get(it.previousIndex()));
+		}
+		
+	}
+		
+	private List<Node<T>> getClosestNodes(Set<? extends Node<T>> openNodes) {
+		double closestDistance = Double.MAX_VALUE;
+		List<Node<T>> closestNodes = new ArrayList<Node<T>>();
+		Set<Node<T>> subSet = new HashSet<Node<T>>(openNodes);
+		for (Node<T> node : openNodes) {
+			subSet.remove(node);
+			for (Node<T> node2 : subSet) {
+				double tmpDi = node.getDistance(node2);
+				if (tmpDi < closestDistance){
+					closestDistance = tmpDi;
+					closestNodes.clear();
+					closestNodes.add(node);
+					closestNodes.add(node2);
+				}
+//				System.out.println("calculation: "+node+", "+node2+" ("+tmpDi+")");
+			}
+		}
+		if (closestNodes.size() > 1) {
+			System.out.println("Closest nodes: "+closestNodes.get(0)+", "+closestNodes.get(1)+" ("+closestDistance+")");
+		}
+		return closestNodes;
+	}
+	
+	private void printAllNodesInSet(Set<? extends PrintableNode> set, String nodeNames){
+		System.out.println("-----------------------");
+		System.out.println(nodeNames);
+		PrintableNode[] setArr = set.toArray(new PrintableNode[set.size()]);
+		Arrays.sort(setArr);
+		for (PrintableNode node : setArr) {
+			System.out.println(node.toString()+"|\t"+node.getAttributesString());
+		}
+		System.out.println("-----------------------");
+	}
+	
+	public void printAllOpenUserNodes() {
+		printAllNodesInSet(userNodes, "User Nodes:");
+	}
+	
+	public void printAllOpenMovieNodes() {
+		printAllNodesInSet(movieNodes, "MovieNodes:");
+	}
+	
+	public List<Node<T>> getClosestOpenUserNodes() {
+		return getClosestNodes(userNodes);
+	}
+	
+	public List<Node<T>> getClosestOpenMovieNodes() {
+		return getClosestNodes(movieNodes);
+	}
+	
+	private void mergeNodes(List<Node<T>> nodes, Set<? extends Node<T>> openSet) {
+		for (Node<T> node : nodes) {
+			openSet.remove(node);
+		}
+		if (nodes.size() > 1) {
+			Node<T> newNode = nodes.get(0).getNodeFactory().createNode(nodes);
+		}
+
+		
+	}
+}

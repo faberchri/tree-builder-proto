@@ -1,0 +1,13 @@
+package clusterer;
+
+import java.util.Comparator;
+
+public class NodeIdComparator<T> implements Comparator<PrintableNode<T>> {
+
+
+	@Override
+	public int compare(PrintableNode<T> o1, PrintableNode<T> o2) {
+		return Integer.compare(o1.getId(), o2.getId());
+	}
+
+}

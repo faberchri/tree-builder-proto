@@ -1,0 +1,13 @@
+package clusterer;
+
+public class ContentNodeFactory<T> extends NodeFactory<T> {
+
+	@Override
+	public Node<T> createNode() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
+	
+}

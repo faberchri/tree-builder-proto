@@ -1,0 +1,19 @@
+package clusterer;
+
+import java.util.List;
+
+public class ContentNodeFactory<T> extends NodeFactory<T> {
+
+	public ContentNodeFactory(NodeDistanceCalculator ndc) {
+		super(ndc);
+	}
+
+	@Override
+	public Node<T> createNode(List<Node<T>> nodesToMerge) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
+	
+}

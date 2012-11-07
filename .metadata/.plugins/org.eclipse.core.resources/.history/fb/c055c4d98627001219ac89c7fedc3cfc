@@ -1,0 +1,17 @@
+package clusterer;
+
+public class ContentNodeFactory<T> extends NodeFactory<T> {
+
+	public ContentNodeFactory(NodeDistanceCalculator ndc) {
+		super(ndc);
+	}
+
+	@Override
+	public Node<T> createNode() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
+	
+}

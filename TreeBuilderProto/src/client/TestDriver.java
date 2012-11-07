@@ -11,11 +11,12 @@ public class TestDriver {
 		RandomDataset ds = new RandomDataset();
 		ds.printRandomMatrix();
 		TreeBuilder<Double> treeBuilder = new TreeBuilder<Double>(ds);
-
-		treeBuilder.printAllOpenUserNodes();
-		treeBuilder.printAllOpenMovieNodes();
-		treeBuilder.getClosestOpenUserNodes();
-		treeBuilder.getClosestOpenMovieNodes();
+		treeBuilder.cluster();
+		
+//		treeBuilder.printAllOpenUserNodes();
+//		treeBuilder.printAllOpenMovieNodes();
+//		treeBuilder.getClosestOpenUserNodes();
+//		treeBuilder.getClosestOpenMovieNodes();
 	}
 
 }

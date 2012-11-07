@@ -1,0 +1,13 @@
+package clusterer;
+
+import java.util.Comparator;
+
+public class NodeIdComparator<T> implements Comparator<Node<T>> {
+
+	@Override
+	public int compare(Node<T> o1, Node<T> o2) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+}

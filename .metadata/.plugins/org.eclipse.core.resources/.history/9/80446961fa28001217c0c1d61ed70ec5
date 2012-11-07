@@ -1,0 +1,10 @@
+package clusterer;
+
+public interface Attribute {
+
+	public double getAverage();
+	
+	public double getStdDev();
+	
+	public int getSupport();
+}

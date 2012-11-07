@@ -1,0 +1,13 @@
+package clusterer;
+
+public class Attribute {
+	private double average;
+	private double stdDev;
+	private int support;
+	
+	public Attribute(double average) {
+		this.average = average;
+		this.stdDev = 0.0;
+		this.support = 0;
+	}
+}

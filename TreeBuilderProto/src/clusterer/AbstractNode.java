@@ -2,14 +2,19 @@ package clusterer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 
-public abstract class AbstractNode<T> implements Node<T>, PrintableNode{
+public abstract class AbstractNode implements PrintableNode, Comparable<AbstractNode>{
+	
+	private Set<Node> children = null;
+	private Node parent = null;
 	
 	private NodeDistanceCalculator distanceCalculator;
 	
@@ -21,12 +26,12 @@ public abstract class AbstractNode<T> implements Node<T>, PrintableNode{
 		return distanceCalculator.calculateDistance(this, otherNode);
 	}
 	
-	String getAttributesString(Map<? extends AbstractNode, T> map) {
+	String getAttributesString(Map<PrintableNode, Attribute> map) {
 
-		List<AbstractNode> keyList = new ArrayList<AbstractNode>(map.keySet());
-		Collections.sort(keyList);
+		List<PrintableNode> keyList = new ArrayList<PrintableNode>(map.keySet());
+		Collections.sort(keyList, new NodeIdComparator());
 		String s = "";
-		for (AbstractNode node : keyList) {
+		for (PrintableNode node : keyList) {
 			s = s.concat(node.toString()).concat(": ").concat(map.get(node).toString()).concat(";\t");
 		}
 
@@ -40,8 +45,48 @@ public abstract class AbstractNode<T> implements Node<T>, PrintableNode{
 	public abstract int getId();
 	
 	@Override
-	public int compareTo(PrintableNode o) {
+	public int compareTo(AbstractNode o) {
 		return ((Integer)this.getId()).compareTo((Integer)o.getId());
+	}
+	
+	@Override
+	public Iterator<Node> getChildren() {
+		return children.iterator();
+	}
+	
+	@Override
+	public boolean isChild(Node possibleChild) {
+		return children.contains(possibleChild);
+	}
+	
+	@Override
+	public Node getParent() {
+		return parent;
+	}
+	
+	@Override
+	public void addChild(Node child) {
+		if (this.children == null) {
+			this.children = new HashSet<Node>(); 
+		}
+		this.children.add(child);
+	}
+	
+	@Override
+	public void setParent(Node parent) {
+		this.parent = parent;		
+	}
+	
+	@Override
+	public boolean isLeaf() {
+		if (this.children == null) return true;
+		return false;
+	}
+	
+	@Override
+	public boolean isRoot() {
+		if (this.parent == null) return true;
+		return false;
 	}
 	
 }

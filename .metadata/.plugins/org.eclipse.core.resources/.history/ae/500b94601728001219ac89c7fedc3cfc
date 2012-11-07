@@ -1,0 +1,52 @@
+package clusterer;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class NodeFactory<T> {
+	
+//	private NodeDistanceCalculator nodeDistanceCalculator;
+	private final ContentNodeFactory<T> contentNodeFactory = new ContentNodeFactory<T>();
+	private final UserNodeFactory<T> userNodeFactory;
+
+	
+	public NodeFactory(NodeDistanceCalculator ndcUsers, NodeDistanceCalculator ndcContent) {
+		
+		this.contentNodeFactory = ;
+		this.userNodeFactory = new UserNodeFactory<T>(ndcUsers);
+		
+	}
+		
+//	public abstract NodeDistanceCalculator getNodeDistanceCalculator();
+	
+	
+	public Node<T> createNode(List<Node<T>> nodesToMerge) {
+		// not used! empty implementation
+		return null;
+	}
+	
+	public List<Node<T>> createEmptyContentNodes(int numberOfNodes) {
+		return createEmptyNodes(numberOfNodes, contentNodeFactory);
+	}
+	
+	public List<Node<T>> createEmptyUserNodes(int numberOfNodes) {
+		return createEmptyNodes(numberOfNodes, userNodeFactory);
+	}
+	
+	private List<Node<T>> createEmptyNodes(int numberOfNodes, NodeFactory<T> factory) {
+		List<Node<T>> nodes = new ArrayList<Node<T>>();
+		for (int i = 0; i < numberOfNodes; i++) {
+			nodes.add(factory.createNode(null));
+		}
+		return nodes;
+	}
+
+	
+//	public MovieNode<T> createMovieNode(Node<T>[] mergeNodes) {
+//		return null;
+//	}
+//	
+//	public UserNode<T> createUserNode(Node<T>[] mergeNodes) {
+//		return null;
+//	}
+}

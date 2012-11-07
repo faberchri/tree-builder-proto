@@ -1,0 +1,5 @@
+package clusterer;
+
+public class UserNodeFactory<T> extends NodeFactory<T> {
+
+}

@@ -1,0 +1,15 @@
+package clusterer;
+
+public class UserNodeFactory<T> extends NodeFactory<T> {
+
+	public UserNodeFactory(NodeDistanceCalculator ndc) {
+		super(ndc);
+	}
+	
+	@Override
+	public Node<T> createNode() {
+		return null;
+	}
+
+	
+}

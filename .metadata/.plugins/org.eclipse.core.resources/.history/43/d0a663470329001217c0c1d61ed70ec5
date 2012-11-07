@@ -1,0 +1,27 @@
+package clusterer;
+
+import java.util.List;
+
+public class SimpleAttributeFactory extends AttributeFactory {
+
+	private static SimpleAttributeFactory factory = new SimpleAttributeFactory();
+	
+	private SimpleAttributeFactory() {
+		// singleton
+	}
+	
+	public static  AttributeFactory getInstance() {
+		return factory;
+	}
+	
+	@Override
+	public Attribute createAttribute(T rating) {
+		return new SimpleAttribute(rating);
+	}
+
+	@Override
+	public Attribute createAttribute(List<Attribute> attributes) {
+		return new SimpleAttribute(attributes);
+	}
+
+}

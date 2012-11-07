@@ -1,0 +1,28 @@
+package clusterer;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class NodeFactory<T> {
+	
+	private NodeDistanceCalculator nodeDistanceCalculator;
+	
+	public NodeFactory(NodeDistanceCalculator ndc) {
+		this.nodeDistanceCalculator = ndc;
+	}
+	
+	
+	NodeDistanceCalculator getNodeDistanceCalculator() {
+		return nodeDistanceCalculator;
+	}
+	
+	public abstract Node<T> createNode(List<Node<T>> nodesToMerge);
+	
+//	public MovieNode<T> createMovieNode(Node<T>[] mergeNodes) {
+//		return null;
+//	}
+//	
+//	public UserNode<T> createUserNode(Node<T>[] mergeNodes) {
+//		return null;
+//	}
+}

@@ -1,0 +1,58 @@
+package clusterer;
+
+import java.util.List;
+
+class SimpleAttributeFactory<T> extends AttributeFactory<T> {
+
+	private static SimpleAttributeFactory factory = new SimpleAttributeFactory();
+	
+	private SimpleAttributeFactory() {
+		// singleton
+	}
+	
+	public static  AttributeFactory getInstance() {
+		return factory;
+	}
+	
+	@Override
+	public Attribute createAttribute(T rating) {
+		return new SimpleAttribute(normalizeInput(rating));
+	}
+
+	@Override
+	public Attribute createAttribute(List<Attribute> attributes) {
+		return new SimpleAttribute(attributes);
+	}
+	
+	private Attribute calcAttributeValues(List<Attribute> attributesToCombine) {
+		int sizeOfNewLeafList = 0;
+		for (Attribute attribute : attributesToCombine) {
+			sizeOfNewLeafList += attribute.getLeafList().length;
+		}		
+		double[] tmpAr = new double[sizeOfNewLeafList];
+		int prevAttLength = 0;
+		for (Attribute attribute : attributesToCombine) {
+			System.arraycopy(attribute.getLeafList(), 0, tmpAr, prevAttLength, attribute.getLeafList().length);
+		}
+//		leafList = tmpAr;
+		
+		int tmpSup = 0;
+		for (Attribute attribute : attributesToCombine) {
+			 tmpSup += attribute.getSupport();
+		}
+		this.support = tmpSup;
+		
+		double tmpAvg = 0.0;
+		for (Double avgLi : leafList) {
+			tmpAvg += avgLi;
+		}
+		this.average = tmpAvg / leafList.length;
+		
+		double tmpStD = 0.0;
+		for (Double avgLi : leafList) {
+			tmpStD += Math.pow((avgLi-this.average),2.0);
+		}
+		this.stdDev = Math.sqrt(tmpStD/(leafList.length - 1.0));
+	}
+
+}

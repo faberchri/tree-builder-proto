@@ -1,0 +1,62 @@
+package clusterer;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 
+ * @author faber
+ * 
+ * Is immutable object.
+ *
+ */
+public class Attribute {
+	private final double average;
+	private final double stdDev;
+	private final int support;
+	private final double[] leafList;
+	
+	public Attribute(double average) {
+		this.average = average;
+		this.stdDev = 0.0;
+		this.support = 1;
+		leafList = new double[] {average};
+	}
+	
+	
+	public Attribute(List<Attribute> attributesToCombine) {
+		for (Attribute attribute : attributesToCombine) {
+			leafList.addAll(attribute.getLeafList());
+		}
+		for (Attribute attribute : attributesToCombine) {
+			this.support += attribute.getSupport();
+		}
+		double tmp = 0.0;
+		for (Double avgLi : leafList) {
+			tmp += avgLi;
+		}
+		this.average = tmp / leafList.size();
+		tmp = 0.0;
+		for (Double avgLi : leafList) {
+			tmp += Math.pow((avgLi-this.average),2.0);
+		}
+		this.stdDev = Math.sqrt(tmp/(leafList.size() - 1.0));
+
+	}
+	
+	public double getAverage() {
+		return average;
+	}
+	
+	public double getStdDev() {
+		return stdDev;
+	}
+	
+	public int getSupport() {
+		return support;
+	}
+	
+	private List<Double> getLeafList() {
+		return leafList;
+	}
+}

@@ -1,0 +1,14 @@
+package client;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.ListIterator;
+
+import sun.text.normalizer.UCharacter.NumericType;
+
+public interface Dataset <T> {
+	public ListIterator<List<T extends NumericType>> iterateOverUsers();
+	public ListIterator<List<T>> iterateOverContentItems();
+	public int getNumberOfUsers();
+	public int getNumberOfContentItems();
+}

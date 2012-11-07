@@ -1,0 +1,26 @@
+package clusterer;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class UserNodeFactory<T> extends NodeFactory<T> {
+
+	public UserNodeFactory(NodeDistanceCalculator ndc) {
+		super(ndc);
+	}
+	
+	@Override
+	public Node<T> createNode(List<Node<T>> nodesToMerge) {
+		return null;
+	}
+	
+	public static List<UserNode> createEmptyUserNodes(int numberOfNodes, NodeDistanceCalculator ndc) {
+		List<UserNode> users = new ArrayList<UserNode>();
+		for (int i = 0; i < numberOfNodes; i++) {
+			users.add(new UserNode(ndc));
+		}
+		return users;
+	}
+
+	
+}

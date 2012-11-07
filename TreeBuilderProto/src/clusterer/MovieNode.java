@@ -4,31 +4,32 @@ import java.util.Map;
 import java.util.Set;
 
 
-final class MovieNode<T> extends AbstractNode<T> implements Node<T>{
+final class MovieNode extends AbstractNode {
 	
 	private static int movieNodeId = 0;
+	private static Factory nodeFactory = null;
 	
-	private Map<UserNode<T>, T> users;
+	private Map<Node, Attribute> users;
 	private final int id = movieNodeId++;
 	
 	public MovieNode(NodeDistanceCalculator ndc) {
 		super(ndc);
 	}
 	
-	public void setUsers(Map<UserNode<T>, T> users) {
+	public void setAttributes(Map<Node, Attribute> users) {
 		this.users = users;
 	}
 	
-	public Set<UserNode<T>> getAttributeKeys() {
+	public Set<Node> getAttributeKeys() {
 		return users.keySet();
 	}
 	
-	public T getAttributeValue(Node<T> node) {
+	public Attribute getAttributeValue(Node node) {
 		return users.get(node);
 	}
 			
 	public String getAttributesString() {
-		return getAttributesString(users);
+		return getAttributesString((Map)users);
 	}
 	
 	@Override
@@ -40,4 +41,19 @@ final class MovieNode<T> extends AbstractNode<T> implements Node<T>{
 	public int getId() {
 		return id;
 	}
+	
+	@Override
+	public Factory getNodeFactory() {
+		return nodeFactory;
+	}
+	
+	public static Factory getFactory() {
+		return nodeFactory;
+	}
+	
+	public static void setFactory(Factory factory) {
+		nodeFactory = factory;
+	}
+	
+	
 }

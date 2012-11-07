@@ -1,0 +1,42 @@
+package clusterer;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class NodeFactory<T> {
+	
+//	private NodeDistanceCalculator nodeDistanceCalculator;
+//	private final ContentNodeFactory<T> contentNodeFactory;
+//	private final UserNodeFactory<T> userNodeFactory;
+
+	
+	public NodeFactory(NodeDistanceCalculator ndcUsers, NodeDistanceCalculator ndcContent) {
+		
+		UserNode.setFactory(new UserNodeFactory<T>(ndcUsers));
+		MovieNode.setFactory(new ContentNodeFactory<T>(ndcContent));		
+	}
+		
+	
+	
+//	public Node<T> createNode(List<Node<T>> nodesToMerge) {
+//		// not used! empty implementation
+//		return null;
+//	}
+	
+	public List createEmptyContentNodes(int numberOfNodes) {
+		return createEmptyNodes(numberOfNodes, MovieNode.getFactory());
+	}
+	
+	public List createEmptyUserNodes(int numberOfNodes) {
+		return createEmptyNodes(numberOfNodes, UserNode.getFactory());
+	}
+	
+	private List<Node<T>> createEmptyNodes(int numberOfNodes, Factory factory) {
+		List<Node<T>> nodes = new ArrayList<Node<T>>();
+		for (int i = 0; i < numberOfNodes; i++) {
+			nodes.add(factory.createNode(null));
+		}
+		return nodes;
+	}
+
+}

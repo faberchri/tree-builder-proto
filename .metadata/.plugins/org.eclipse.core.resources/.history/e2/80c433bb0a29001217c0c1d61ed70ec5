@@ -1,0 +1,13 @@
+package clusterer;
+
+import java.util.List;
+
+public interface Factory {
+	
+	/**
+	 * for now we assume nodesToMerge.size() == 2 or nodesToMerge == null
+	 * @param List nodesToMerge
+	 * @return
+	 */
+	public Node createNode(List<Node> nodesToMerge);
+}

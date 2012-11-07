@@ -1,0 +1,7 @@
+package clusterer;
+
+import java.util.List;
+
+public interface Factory {
+	public Node createNode(List<Node> nodesToMerge);
+}

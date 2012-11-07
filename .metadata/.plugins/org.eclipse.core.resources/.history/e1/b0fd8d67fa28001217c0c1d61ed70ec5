@@ -1,0 +1,6 @@
+package clusterer;
+
+public class AttributeFactory {
+	Attribute createAttribute(double  rating); // single node
+	
+}

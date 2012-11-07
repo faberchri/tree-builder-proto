@@ -1,0 +1,18 @@
+package clusterer;
+
+import java.util.List;
+
+public class SimpleAttributeFactory extends AttributeFactory {
+
+	@Override
+	public Attribute createAttribute(double rating) {
+		return new SimpleAttribute(rating);
+	}
+
+	@Override
+	public Attribute createAttribute(List<Attribute> attributes) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

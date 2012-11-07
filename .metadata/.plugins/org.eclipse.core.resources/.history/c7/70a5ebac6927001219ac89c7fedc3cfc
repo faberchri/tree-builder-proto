@@ -1,0 +1,14 @@
+package clusterer;
+
+import java.util.Set;
+import java.util.Collection;
+
+public interface Node<T> {
+	public double getDistance(Node<T> otherNode);
+	public T getAttributeValue(Node<T> node);
+	public Set<? extends AbstractNode<T>> getAttributeKeys();
+	public void addChild (Node<T> child);
+	public void setParent(Node<T> parent);
+	public Collection<Node<T>> getChildren();
+	
+}

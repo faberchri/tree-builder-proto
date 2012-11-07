@@ -1,0 +1,36 @@
+package clusterer;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ContentNodeFactory<T> implements Factory<T>{
+
+	private NodeDistanceCalculator nodeDistanceCalculator;
+	
+	ContentNodeFactory(NodeDistanceCalculator ndc) {
+
+		this.nodeDistanceCalculator = ndc;
+	}
+
+	@Override
+	public Node<T> createNode(List<Node<T>> nodesToMerge) {
+		if (nodesToMerge == null) {
+			return new MovieNode<T>(getNodeDistanceCalculator());
+		}
+		
+		return null;
+	}
+	
+	public NodeDistanceCalculator getNodeDistanceCalculator() {
+		return nodeDistanceCalculator;
+	}
+	
+//	public List<Node<T>> createEmptyContentNodes(int numberOfNodes) {
+//		List<Node<T>> movies = new ArrayList<Node<T>>();
+//		for (int i = 0; i < numberOfNodes; i++) {
+//			movies.add(new MovieNode<T>(getNodeDistanceCalculator()));
+//		}
+//		return movies;
+//	}
+	
+}

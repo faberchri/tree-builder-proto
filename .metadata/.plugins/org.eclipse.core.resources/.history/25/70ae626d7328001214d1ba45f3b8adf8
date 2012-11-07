@@ -1,0 +1,7 @@
+package clusterer;
+
+import java.util.Comparator;
+
+public class NodeIdComparator implements Comparator<T> {
+
+}
