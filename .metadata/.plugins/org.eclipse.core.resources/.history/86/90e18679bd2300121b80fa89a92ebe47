@@ -1,5 +1,0 @@
-package clusterer;
-
-final class MovieNode {
-
-}

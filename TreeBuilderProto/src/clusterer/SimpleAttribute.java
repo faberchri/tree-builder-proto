@@ -15,7 +15,7 @@ class SimpleAttribute implements Attribute {
 	private final double average;
 	private final double stdDev;
 	private final int support;
-	private final double[] leafList;
+	private final double[] leafList; //FIXME is mutable: we would need something like: List<Integer> items = Collections.unmodifiableList(Arrays.asList(0,1,2,3));
 	
 	public SimpleAttribute(double average) {
 		this.average = average;
