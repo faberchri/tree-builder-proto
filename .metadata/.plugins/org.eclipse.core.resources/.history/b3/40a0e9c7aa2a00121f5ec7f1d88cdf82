@@ -57,7 +57,8 @@ final class UserNode extends AbstractNode  {
 
 	@Override
 	public void addAttribute(Node node, Attribute attribute) {
-		movies.put(node, attribute);		
+		movies.put(node, attribute);
+		
 	}
 	
 }

@@ -28,12 +28,11 @@ public final class TreeBuilder<T extends Number> {
 	private NodeDistanceCalculator nodeDistanceCalculatorUser = new SimpleNodeDistanceCalculator();
 	private NodeDistanceCalculator nodeDistanceCalculatorContent = new SimpleNodeDistanceCalculator();
 	
-	private NodeUpdater nodeUpdater = new SimpleNodeUpdater();
-	
 	public TreeBuilder(Dataset<T> dataset) {
 		this.dataset = dataset;
 		this.factory = new NodeFactory(nodeDistanceCalculatorUser, nodeDistanceCalculatorContent);
 		this.attributeFactory = SimpleAttributeFactory.getInstance(dataset.getNormalizer());
+		this.
 	}
 	
 	public Node cluster() {
@@ -110,7 +109,84 @@ public final class TreeBuilder<T extends Number> {
 				
 	}
 	
-			
+	
+//	private void initLeafNodes(Dataset<T> dataset) {
+//		// create UserNode objects
+//		List<UserNode> users = factory.createEmptyUserNodes(dataset.getNumberOfUsers());
+//		
+//		// create MovieNode objects
+//		List<MovieNode> movies = factory.createEmptyContentNodes(dataset.getNumberOfContentItems());
+//
+//		
+//		// add movieNodes to userNodes
+//		ListIterator<List<T>> it = dataset.iterateOverUsers();
+//		while(it.hasNext()) {
+//			Map<Node, Attribute> simpleAttributes = new HashMap<Node, Attribute>();
+//			List<T> li = it.next();
+//			for (int i = 0; i < li.size(); i++) {
+//				if (li.get(i) != null) {					
+//					simpleAttributes.put(movies.get(i), attributeFactory.createAttribute(li.get(i)));
+//				}
+//			}
+//			users.get(it.previousIndex()).setAttributes(simpleAttributes);
+//			userNodes.add(users.get(it.previousIndex()));
+//		}
+//		
+//		// add userNodes to movieNodes		
+//		it = dataset.iterateOverContentItems();
+//		while(it.hasNext()) {
+//			Map<Node, Attribute> attributes = new HashMap<Node, Attribute>();
+//			List<T> li = it.next();
+//			for (int i = 0; i < li.size(); i++) {
+//				if (li.get(i) != null) {
+//					attributes.put(users.get(i), attributeFactory.createAttribute(li.get(i)));
+//				}
+//			}
+//			movies.get(it.previousIndex()).setAttributes(attributes);
+//			movieNodes.add(movies.get(it.previousIndex()));
+//		}
+//		
+//	}
+		
+//	private void initLeafNodes(Dataset dataset) {
+//		NodeDistanceCalculator ndc = new SimpleNodeDistanceCalculator();
+//		// create UserNode objects
+//		List<UserNode> users = factory.createEmptyUserNodes(dataset.getNumberOfUsers());
+//		
+//		// create MovieNode objects
+//		List<MovieNode> movies = factory.createEmptyContentNodes(dataset.getNumberOfContentItems());
+//
+//		
+//		// add movieNodes to userNodes
+//		ListIterator<List> it = dataset.iterateOverUsers();
+//		while(it.hasNext()) {
+//			Map<Node, T> attributes = new HashMap<Node, T>();
+//			List li = it.next();
+//			for (int i = 0; i < li.size(); i++) {
+//				if (li.get(i) != null) {					
+//					attributes.put(movies.get(i), li.get(i));
+//				}
+//			}
+//			users.get(it.previousIndex()).setAttributes(attributes);
+//			userNodes.add(users.get(it.previousIndex()));
+//		}
+//		
+//		// add userNodes to movieNodes		
+//		it = dataset.iterateOverContentItems();
+//		while(it.hasNext()) {
+//			Map<Node, T> attributes = new HashMap<Node, T>();
+//			List li = it.next();
+//			for (int i = 0; i < li.size(); i++) {
+//				if (li.get(i) != null) {
+//					attributes.put(users.get(i), li.get(i));
+//				}
+//			}
+//			movies.get(it.previousIndex()).setAttributes(attributes);
+//			movieNodes.add(movies.get(it.previousIndex()));
+//		}
+//		
+//	}
+		
 	private List<Node> getClosestNodes(Set<? extends Node> openNodes) {
 		long time = System.currentTimeMillis();
 		double closestDistance = Double.MAX_VALUE;
@@ -266,12 +342,18 @@ public final class TreeBuilder<T extends Number> {
 				node.setParent(newNode);
 				newNode.addChild(node);
 				openSet.remove(node);
-			}
-			nodeUpdater.updateNodes(newNode);
+			}		
 		} else {
 			System.err.println("merge attempt with 1 or less nodes, " + getClass().getSimpleName());
 			System.exit(-1);
 		}
 	}
 	
+	private void updateNodesAfterMerge(Node mergeResult) {
+		Set<Node> attributes = mergeResult.getAttributeKeys();
+		for (Node node : attributes) {
+			
+		}
+	}
+
 }

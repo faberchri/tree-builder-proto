@@ -1,0 +1,12 @@
+package clusterer;
+
+public class SimpleNodeUpdater implements NodeUpdater {
+
+	@Override
+	public void updateNodes(Node newNode, AttributeFactory factory) {
+		for (Node attNode : newNode.getAttributeKeys()) {
+			attNode.addAttribute(newNode, attribute)
+		}
+	}
+
+}

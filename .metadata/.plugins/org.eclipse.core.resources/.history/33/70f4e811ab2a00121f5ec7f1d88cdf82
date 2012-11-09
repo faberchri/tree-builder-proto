@@ -1,0 +1,11 @@
+package clusterer;
+
+public class SimpleNodeUpdater implements NodeUpdater {
+
+	@Override
+	public void updateNodes(Node newNode) {
+		newNode.getAttributeKeys();
+		newNode.getAttributeValue(node)
+	}
+
+}

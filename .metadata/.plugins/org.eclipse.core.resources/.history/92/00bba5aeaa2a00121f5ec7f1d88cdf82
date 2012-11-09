@@ -9,7 +9,7 @@ public interface Node {
 	public double getDistance(Node otherNode);
 	public NodeDistance getDistanceToClosestNode(List<Node> list);
 	public void setAttributes(Map<Node, Attribute> attributes);
-	public void addAttribute(Node node, Attribute attribute);
+//	public void addAttribute(Node attribute);
 	public Attribute getAttributeValue(Node node);
 	public Set<Node> getAttributeKeys();
 	public void addChild (Node child);
