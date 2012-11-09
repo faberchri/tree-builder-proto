@@ -143,7 +143,7 @@ public final class TreeBuilder<T extends Number> {
 	}
 	
 	private List<Node> getClosestNodesParallel(Set<? extends Node> openNodes) {
-//		long time = System.currentTimeMillis();
+		long time = System.currentTimeMillis();
 		
 		int numOfThreads = Runtime.getRuntime().availableProcessors();
 		
@@ -194,8 +194,8 @@ public final class TreeBuilder<T extends Number> {
 
 		System.out.println("Closest nodes: "+res.get(0)+", "+res.get(1)+" ("+bestND.getDistance()+")");
 
-//		time = System.currentTimeMillis() - time;
-//		System.out.println("Time in getClosestNode() parallel: " + (double)time / 1000.0);
+		time = System.currentTimeMillis() - time;
+		System.out.println("Time in getClosestNode() parallel: " + (double)time / 1000.0);
 		return res;
 	}
 	

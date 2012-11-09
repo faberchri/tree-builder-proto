@@ -24,36 +24,31 @@ public final class TreeBuilder<T extends Number> {
 		
 	private NodeFactory factory;
 	private AttributeFactory<T> attributeFactory;
-		
-	private NodeUpdater nodeUpdater;
 	
-	public TreeBuilder(Dataset<T> dataset, NodeDistanceCalculator ndcUsers, NodeDistanceCalculator ndcContents, NodeUpdater nodeUpdater) {
+	private NodeDistanceCalculator nodeDistanceCalculatorUser = new SimpleNodeDistanceCalculator();
+	private NodeDistanceCalculator nodeDistanceCalculatorContent = new SimpleNodeDistanceCalculator();
+	
+	private NodeUpdater nodeUpdater = new SimpleNodeUpdater();
+	
+	public TreeBuilder(Dataset<T> dataset) {
 		this.dataset = dataset;
-		this.factory = new NodeFactory(ndcUsers, ndcContents);
+		this.factory = new NodeFactory(nodeDistanceCalculatorUser, nodeDistanceCalculatorContent);
 		this.attributeFactory = SimpleAttributeFactory.getInstance(dataset.getNormalizer());
-		this.nodeUpdater = nodeUpdater;
 	}
 	
 	public Node cluster() {
 		initLeafNodes(dataset);
-		int cycleCount = 0;
-		long startTime = System.currentTimeMillis();
 		while (userNodes.size() > 2 && movieNodes.size() > 2) {
 			List<Node> cN = getClosestOpenUserNodesParallel();
-//			getClosestOpenUserNodes();
+			getClosestOpenUserNodes();
 //			System.out.println("ClosestOpenUserNodes: "+ cN);
 			mergeNodes(cN, userNodes);
-			double elapsedTime = ((double)(System.currentTimeMillis() - startTime)) / 1000.0;
-			System.out.println("number of open user nodes: " + userNodes.size() + "\t elapsed time [s]: "+ elapsedTime);
 //			printAllOpenUserNodes();
 			cN = getClosestOpenMovieNodesParallel();
-//			getClosestOpenMovieNodes();
+			getClosestOpenMovieNodes();
 //			System.out.println("ClosestOpenMovieNodes: "+ cN);
 			mergeNodes(cN, movieNodes);
-			elapsedTime = ((double)(System.currentTimeMillis() - startTime)) / 1000.0;
-			System.out.println("number of open movie nodes: " + movieNodes.size() + "\t elapsed time [s]: "+ elapsedTime);
 //			printAllOpenMovieNodes();
-			cycleCount++;
 		} 
 		
 //		getClosestOpenMovieNodes();
@@ -143,7 +138,7 @@ public final class TreeBuilder<T extends Number> {
 	}
 	
 	private List<Node> getClosestNodesParallel(Set<? extends Node> openNodes) {
-//		long time = System.currentTimeMillis();
+		long time = System.currentTimeMillis();
 		
 		int numOfThreads = Runtime.getRuntime().availableProcessors();
 		
@@ -194,8 +189,8 @@ public final class TreeBuilder<T extends Number> {
 
 		System.out.println("Closest nodes: "+res.get(0)+", "+res.get(1)+" ("+bestND.getDistance()+")");
 
-//		time = System.currentTimeMillis() - time;
-//		System.out.println("Time in getClosestNode() parallel: " + (double)time / 1000.0);
+		time = System.currentTimeMillis() - time;
+		System.out.println("Time in getClosestNode() parallel: " + (double)time / 1000.0);
 		return res;
 	}
 	

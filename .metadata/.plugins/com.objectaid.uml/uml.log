@@ -1,4 +1,4 @@
-2012-11-09 16:16:11.251 [Worker-0] INFO    com.objectaid.uml.license.LicenseManager initialize: found license Sequence Diagram 1.0.x - EVAL until 2012-12-07
-2012-11-09 16:16:12.298 [Worker-2] INFO    com.objectaid.uml.model.manage.DiagramManager getFactories: com.objectaid.uml.diagramFactories[ucls]: com.objectaid.uml.cls.model.ClassDiagramFactory@7221275b
-2012-11-09 16:16:12.305 [Worker-2] INFO    com.objectaid.uml.model.manage.DiagramManager getFactories: com.objectaid.uml.diagramFactories[useq]: com.objectaid.uml.seq.model.SequenceDiagramFactory@54394557
-2012-11-09 16:16:12.593 [Worker-2] INFO    com.objectaid.uml.model.manage.LanguageElementManager getLanguageElementFactories: com.objectaid.uml.languageElementFactories: com.objectaid.uml.java.JavaElementFactory
+2012-11-09 22:27:21.831 [Worker-0] INFO    com.objectaid.uml.license.LicenseManager initialize: found license Sequence Diagram 1.0.x - EVAL until 2012-12-07
+2012-11-09 22:27:23.072 [Worker-0] INFO    com.objectaid.uml.model.manage.DiagramManager getFactories: com.objectaid.uml.diagramFactories[ucls]: com.objectaid.uml.cls.model.ClassDiagramFactory@76edd135
+2012-11-09 22:27:23.081 [Worker-0] INFO    com.objectaid.uml.model.manage.DiagramManager getFactories: com.objectaid.uml.diagramFactories[useq]: com.objectaid.uml.seq.model.SequenceDiagramFactory@e420f05
+2012-11-09 22:27:23.321 [Worker-0] INFO    com.objectaid.uml.model.manage.LanguageElementManager getLanguageElementFactories: com.objectaid.uml.languageElementFactories: com.objectaid.uml.java.JavaElementFactory

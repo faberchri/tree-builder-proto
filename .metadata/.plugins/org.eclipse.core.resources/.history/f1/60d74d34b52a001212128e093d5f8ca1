@@ -1,7 +1,5 @@
 package client;
 
-import clusterer.SimpleNodeDistanceCalculator;
-import clusterer.SimpleNodeUpdater;
 import clusterer.TreeBuilder;
 
 public class TestDriver {
@@ -14,11 +12,7 @@ public class TestDriver {
 //		ds.printRandomMatrix();
 		
 		Dataset<Integer> ds = new GrouplensDataset(null);
-		TreeBuilder<Integer> treeBuilder = new TreeBuilder<Integer>(
-				ds,
-				new SimpleNodeDistanceCalculator(),
-				new SimpleNodeDistanceCalculator(),
-				new SimpleNodeUpdater());
+		TreeBuilder<Integer> treeBuilder = new TreeBuilder<Integer>(ds);
 		treeBuilder.cluster();
 		
 
