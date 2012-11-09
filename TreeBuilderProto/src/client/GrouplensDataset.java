@@ -6,11 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
 
 import Datasets.DatasetLocator;
 
@@ -37,11 +34,6 @@ public class GrouplensDataset implements Dataset<Integer> {
 	private void parseDataset(InputStream input) {
 		try {
 			int in = input.read();
-			
-			int currentUser = -1;
-			int currentItem = -1;
-			int currentRating = -1;
-			long timeStamp = -1;
 			List<Character> charLi = new ArrayList<Character>();
 			while (in != -1) {
 				charLi.add((char)in);

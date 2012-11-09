@@ -11,8 +11,8 @@ public class TestDriver {
 //		RandomDataset ds = new RandomDataset();
 //		ds.printRandomMatrix();
 		
-		Dataset ds = new GrouplensDataset(null);
-		TreeBuilder<Double> treeBuilder = new TreeBuilder<Double>(ds);
+		Dataset<Integer> ds = new GrouplensDataset(null);
+		TreeBuilder<Integer> treeBuilder = new TreeBuilder<Integer>(ds);
 		treeBuilder.cluster();
 		
 

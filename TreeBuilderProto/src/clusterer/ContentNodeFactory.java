@@ -1,7 +1,6 @@
 package clusterer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -60,13 +59,5 @@ public class ContentNodeFactory implements Factory{
 	public NodeDistanceCalculator getNodeDistanceCalculator() {
 		return nodeDistanceCalculator;
 	}
-	
-//	public List<Node> createEmptyContentNodes(int numberOfNodes) {
-//		List<Node> movies = new ArrayList<Node>();
-//		for (int i = 0; i < numberOfNodes; i++) {
-//			movies.add(new MovieNode(getNodeDistanceCalculator()));
-//		}
-//		return movies;
-//	}
-	
+		
 }

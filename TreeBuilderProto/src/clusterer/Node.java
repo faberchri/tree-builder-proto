@@ -1,12 +1,15 @@
 package clusterer;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public interface Node {
 	public double getDistance(Node otherNode);
+	public NodeDistance getDistanceToClosestNode(List<Node> list);
 	public void setAttributes(Map<Node, Attribute> attributes);
+//	public void addAttribute(Node attribute);
 	public Attribute getAttributeValue(Node node);
 	public Set<Node> getAttributeKeys();
 	public void addChild (Node child);

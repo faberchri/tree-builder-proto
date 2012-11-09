@@ -6,7 +6,6 @@
 <fullyQualifiedTypeName name="clusterer.TreeBuilder.MovieNode"/>
 <fullyQualifiedTypeName name="java.lang.Iterable"/>
 <fullyQualifiedTypeName name="java.util.ListIterator"/>
-<fullyQualifiedTypeName name="client.Dataset"/>
 <fullyQualifiedTypeName name="java.lang.Double"/>
 <fullyQualifiedTypeName name="client.RandomDataset"/>
 <fullyQualifiedTypeName name="java.util.Collections"/>
@@ -33,12 +32,9 @@
 <fullyQualifiedTypeName name="com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.Collections"/>
 <fullyQualifiedTypeName name="java.util.Arrays"/>
 <fullyQualifiedTypeName name="clusterer.Attribute"/>
-<fullyQualifiedTypeName name="clusterer.Node"/>
-<fullyQualifiedTypeName name="java.lang.System"/>
 <fullyQualifiedTypeName name="java.util.Map"/>
 <fullyQualifiedTypeName name="java.lang.ClassLoader"/>
 <fullyQualifiedTypeName name="java.io.File"/>
-<fullyQualifiedTypeName name="java.io.InputStream"/>
 <fullyQualifiedTypeName name="java.io.FileInputStream"/>
 <fullyQualifiedTypeName name="java.lang.String"/>
 <fullyQualifiedTypeName name="client.DatasetItemType"/>
@@ -51,6 +47,14 @@
 <fullyQualifiedTypeName name="java.util.List"/>
 <fullyQualifiedTypeName name="client.DatasetItem"/>
 <fullyQualifiedTypeName name="client.SimpleDatasetItem"/>
+<fullyQualifiedTypeName name="java.io.InputStream"/>
+<fullyQualifiedTypeName name="Datasets.DatasetLocator"/>
+<fullyQualifiedTypeName name="java.lang.Long"/>
+<fullyQualifiedTypeName name="client.IntegerNormalizer"/>
+<fullyQualifiedTypeName name="client.Normalizer"/>
+<fullyQualifiedTypeName name="java.lang.System"/>
+<fullyQualifiedTypeName name="client.Dataset"/>
 <fullyQualifiedTypeName name="java.lang.Integer"/>
 <fullyQualifiedTypeName name="client.GrouplensDataset"/>
+<fullyQualifiedTypeName name="clusterer.Node"/>
 </qualifiedTypeNameHistroy>

@@ -54,6 +54,12 @@ final class MovieNode extends AbstractNode {
 	public static void setFactory(Factory factory) {
 		nodeFactory = factory;
 	}
+
+//	@Override
+//	public void addAttribute(Node attribute) {
+//		users.put(attribute, value)
+//		
+//	}
 	
 	
 }

@@ -1,0 +1,6 @@
+package clusterer;
+
+public interface NodeDistance {
+	public double getDistance();
+	public Node getOtherNode(Node n);
+}

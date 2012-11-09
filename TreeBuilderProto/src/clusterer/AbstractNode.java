@@ -1,8 +1,6 @@
 package clusterer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -17,13 +15,26 @@ public abstract class AbstractNode implements PrintableNode, Comparable<Abstract
 	private Node parent = null;
 	
 	private NodeDistanceCalculator distanceCalculator;
-	
+		
 	public AbstractNode(NodeDistanceCalculator ndc) {
 		this.distanceCalculator = ndc; 
 	}
 	
 	public double getDistance(Node otherNode) {
 		return distanceCalculator.calculateDistance(this, otherNode);
+	}
+	
+	public NodeDistance getDistanceToClosestNode(List<Node> list) {
+		double shortest = Double.MAX_VALUE;
+		Node close = null;
+		for (Node node : list) {
+			double tmp = this.getDistance(node);
+			if (tmp < shortest) {
+				shortest = tmp;
+				close = node;
+			}
+		}
+		return new SimpleNodeDistance(shortest, this, close);
 	}
 	
 	String getAttributesString(Map<PrintableNode, Attribute> map) {

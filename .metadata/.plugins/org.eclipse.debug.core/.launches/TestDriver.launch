@@ -8,4 +8,5 @@
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="client.TestDriver"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="TreeBuilderProto"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xms512m -Xmx512m"/>
 </launchConfiguration>
