@@ -1,0 +1,16 @@
+package clusterer;
+
+import java.util.List;
+
+abstract class AttributeFactory<T> {
+	public abstract Attribute createAttribute(T rating); // single node
+	public abstract Attribute createAttribute(List<Attribute> attributes); // group node
+	
+	double normalizeInput(T inp) {
+		if (inp instanceof Double) {
+			return ((Double)inp).doubleValue();
+		}
+		//FIXME extend this check
+		return -1.0;
+	}
+}

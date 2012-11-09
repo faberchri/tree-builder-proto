@@ -14,39 +14,25 @@ public class RandomDataset implements Dataset<Double> {
 	private static final int NUM_OF_MOVIES = 10;
 
 	private Double[][] randomMatrix = new Double[NUM_OF_MOVIES][NUM_OF_USERS];
-
-	private List<List<Double>> userList = new ArrayList<List<Double>>(NUM_OF_USERS);
-	private List<List<Double>> movieList = new ArrayList<List<Double>>(NUM_OF_MOVIES);
+	
+	private List<DatasetItem<Double>> datasetItems = new ArrayList<DatasetItem<Double>>();
 
 	public RandomDataset() {
 		initRandomMatrix();
-		initUserList();
-		initMovieList();
-	}
-
-
-	@Override
-	public ListIterator<List<Double>> iterateOverUsers() {
-		return userList.listIterator();
+		initDatasetItems();
 	}
 
 	@Override
-	public ListIterator<List<Double>> iterateOverContentItems() {
-		return movieList.listIterator();
-
+	public Iterator<DatasetItem<Double>> iterateOverDatasetItems() {
+		return datasetItems.listIterator();
 	}
 	
 	@Override
-	public int getNumberOfUsers() {
-		return userList.size();
+	public Normalizer<Double> getNormalizer() {
+		// No normalizer needed
+		return null;
 	}
-
-
-	@Override
-	public int getNumberOfContentItems() {
-		return movieList.size();
-	}
-
+	
 	private void initRandomMatrix() {
 		Random randomGenerator = new Random();
 		for (int i = 0; i < randomMatrix.length; i++) {
@@ -63,26 +49,17 @@ public class RandomDataset implements Dataset<Double> {
 			}
 		}
 	}
-
-	private void initUserList() {		
-		for (int i = 0; i < randomMatrix[0].length; i++) {
-			List<Double> tmp = new ArrayList<Double>(randomMatrix.length);
-			for (int j = 0; j < randomMatrix.length; j++) {
-				tmp.add(randomMatrix[j][i]);
-			}
-			userList.add(tmp);
-		}	
-	}
 	
-	private void initMovieList() {		
-		for (int i = 0; i < randomMatrix.length; i++) {
-			List<Double> tmp = new ArrayList<Double>(randomMatrix[i].length);
-			for (int j = 0; j < randomMatrix[i].length; j++) {
-				tmp.add(randomMatrix[i][j]);
+	private void initDatasetItems() {
+		for (int i = 0; i < randomMatrix[0].length; i++) {
+			for (int j = 0; j < randomMatrix.length; j++) {
+				if (randomMatrix[j][i] != null) {
+					datasetItems.add(new SimpleDatasetItem<Double>(randomMatrix[j][i], i, j));	
+				}
 			}
-			movieList.add(tmp);
-		}	
+		}
 	}
+
 
 	public void printRandomMatrix() {
 		for (int i = 0; i < randomMatrix.length; i++) {

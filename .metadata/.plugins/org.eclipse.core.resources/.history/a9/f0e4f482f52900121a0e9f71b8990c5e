@@ -1,0 +1,7 @@
+package Datasets;
+
+public class DatasetLocator {
+	public static InputStream getDataset(String dataSetDescriptor) {
+		return DatasetLocator.class.getResourceAsStream(dataSetDescriptor);
+	}
+}

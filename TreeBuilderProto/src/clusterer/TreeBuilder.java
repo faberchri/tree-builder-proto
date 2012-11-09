@@ -12,6 +12,7 @@ import java.util.Random;
 import java.util.Set;
 
 import client.Dataset;
+import client.DatasetItem;
 
 
 public final class TreeBuilder<T extends Number> {
@@ -27,61 +28,116 @@ public final class TreeBuilder<T extends Number> {
 	public TreeBuilder(Dataset<T> dataset) {
 		this.dataset = dataset;
 		this.factory = new NodeFactory(new SimpleNodeDistanceCalculator(), new SimpleNodeDistanceCalculator());
-		this.attributeFactory = SimpleAttributeFactory.getInstance();
+		this.attributeFactory = SimpleAttributeFactory.getInstance(dataset.getNormalizer());
 	}
 	
 	public Node cluster() {
 		initLeafNodes(dataset);
 		while (userNodes.size() > 2 && movieNodes.size() > 2) {
 			List<Node> cN = getClosestOpenUserNodes();
-			System.out.println("ClosesOpenUserNodes; "+ cN);
+			System.out.println("ClosesOpenUserNodes: "+ cN);
 			mergeNodes(cN, userNodes);
 			printAllOpenUserNodes();
 			cN = getClosestOpenMovieNodes();
-			System.out.println("ClosesOpenMovieNodes; "+ cN);
+			System.out.println("ClosesOpenMovieNodes: "+ cN);
 			mergeNodes(cN, movieNodes);
 			printAllOpenMovieNodes();
 		} 
 		return null; // FIXME
 	}
 	
+		
 	private void initLeafNodes(Dataset<T> dataset) {
-		// create UserNode objects
-		List<UserNode> users = factory.createEmptyUserNodes(dataset.getNumberOfUsers());
-		
-		// create MovieNode objects
-		List<MovieNode> movies = factory.createEmptyContentNodes(dataset.getNumberOfContentItems());
 
+		Map<Integer, List<DatasetItem<T>>> usersMap = new HashMap<Integer, List<DatasetItem<T>>>();
+		Map<Integer, List<DatasetItem<T>>> contentsMap = new HashMap<Integer, List<DatasetItem<T>>>();
 		
-		// add movieNodes to userNodes
-		ListIterator<List<T>> it = dataset.iterateOverUsers();
+		Iterator<DatasetItem<T>> it = dataset.iterateOverDatasetItems();
 		while(it.hasNext()) {
-			Map<Node, Attribute> simpleAttributes = new HashMap<Node, Attribute>();
-			List<T> li = it.next();
-			for (int i = 0; i < li.size(); i++) {
-				if (li.get(i) != null) {					
-					simpleAttributes.put(movies.get(i), attributeFactory.createAttribute(li.get(i)));
-				}
+			DatasetItem<T> datasetItem = it.next();
+			if (usersMap.containsKey(datasetItem.getUserId())) {
+				usersMap.get(datasetItem.getUserId()).add(datasetItem);
+			} else {
+				List<DatasetItem<T>> li = new ArrayList<DatasetItem<T>>();
+				li.add(datasetItem);
+				usersMap.put(datasetItem.getUserId(), li);
 			}
-			users.get(it.previousIndex()).setAttributes(simpleAttributes);
-			userNodes.add(users.get(it.previousIndex()));
+			if (contentsMap.containsKey(datasetItem.getContentId())) {
+				contentsMap.get(datasetItem.getContentId()).add(datasetItem);
+			} else {
+				List<DatasetItem<T>> li = new ArrayList<DatasetItem<T>>();
+				li.add(datasetItem);
+				contentsMap.put(datasetItem.getContentId(), li);
+			}
 		}
 		
-		// add userNodes to movieNodes		
-		it = dataset.iterateOverContentItems();
-		while(it.hasNext()) {
+		Map<Integer, Node> usersNodeMap = new HashMap<Integer, Node>();
+		for (Integer i : usersMap.keySet()) {
+			usersNodeMap.put(i, UserNode.getFactory().createNode(null, null));
+		}
+		
+		Map<Integer, Node> contentsNodeMap = new HashMap<Integer, Node>();
+		for (Integer i : contentsMap.keySet()) {
+			contentsNodeMap.put(i, MovieNode.getFactory().createNode(null, null));
+		}
+		
+		for (Map.Entry<Integer, List<DatasetItem<T>>> entry : usersMap.entrySet()) {
 			Map<Node, Attribute> attributes = new HashMap<Node, Attribute>();
-			List<T> li = it.next();
-			for (int i = 0; i < li.size(); i++) {
-				if (li.get(i) != null) {
-					attributes.put(users.get(i), attributeFactory.createAttribute(li.get(i)));
-				}
+			for (DatasetItem<T> di : entry.getValue()) {
+				attributes.put(contentsNodeMap.get(di.getContentId()), attributeFactory.createAttribute(di.getValue()));
 			}
-			movies.get(it.previousIndex()).setAttributes(attributes);
-			movieNodes.add(movies.get(it.previousIndex()));
+			usersNodeMap.get(entry.getKey()).setAttributes(attributes);
+			userNodes.add(usersNodeMap.get(entry.getKey()));
 		}
-		
+		for (Map.Entry<Integer, List<DatasetItem<T>>> entry : contentsMap.entrySet()) {
+			Map<Node, Attribute> attributes = new HashMap<Node, Attribute>();
+			for (DatasetItem<T> di : entry.getValue()) {
+				attributes.put(usersNodeMap.get(di.getUserId()), attributeFactory.createAttribute(di.getValue()));
+			}
+			contentsNodeMap.get(entry.getKey()).setAttributes(attributes);
+			movieNodes.add(contentsNodeMap.get(entry.getKey()));
+		}		
+				
 	}
+	
+	
+//	private void initLeafNodes(Dataset<T> dataset) {
+//		// create UserNode objects
+//		List<UserNode> users = factory.createEmptyUserNodes(dataset.getNumberOfUsers());
+//		
+//		// create MovieNode objects
+//		List<MovieNode> movies = factory.createEmptyContentNodes(dataset.getNumberOfContentItems());
+//
+//		
+//		// add movieNodes to userNodes
+//		ListIterator<List<T>> it = dataset.iterateOverUsers();
+//		while(it.hasNext()) {
+//			Map<Node, Attribute> simpleAttributes = new HashMap<Node, Attribute>();
+//			List<T> li = it.next();
+//			for (int i = 0; i < li.size(); i++) {
+//				if (li.get(i) != null) {					
+//					simpleAttributes.put(movies.get(i), attributeFactory.createAttribute(li.get(i)));
+//				}
+//			}
+//			users.get(it.previousIndex()).setAttributes(simpleAttributes);
+//			userNodes.add(users.get(it.previousIndex()));
+//		}
+//		
+//		// add userNodes to movieNodes		
+//		it = dataset.iterateOverContentItems();
+//		while(it.hasNext()) {
+//			Map<Node, Attribute> attributes = new HashMap<Node, Attribute>();
+//			List<T> li = it.next();
+//			for (int i = 0; i < li.size(); i++) {
+//				if (li.get(i) != null) {
+//					attributes.put(users.get(i), attributeFactory.createAttribute(li.get(i)));
+//				}
+//			}
+//			movies.get(it.previousIndex()).setAttributes(attributes);
+//			movieNodes.add(movies.get(it.previousIndex()));
+//		}
+//		
+//	}
 		
 //	private void initLeafNodes(Dataset dataset) {
 //		NodeDistanceCalculator ndc = new SimpleNodeDistanceCalculator();
@@ -123,6 +179,7 @@ public final class TreeBuilder<T extends Number> {
 //	}
 		
 	private List<Node> getClosestNodes(Set<? extends Node> openNodes) {
+		long time = System.currentTimeMillis();
 		double closestDistance = Double.MAX_VALUE;
 		List<Node> closestNodes = new ArrayList<Node>();
 		Set<Node> subSet = new HashSet<Node>(openNodes);
@@ -142,6 +199,8 @@ public final class TreeBuilder<T extends Number> {
 		if (closestNodes.size() > 1) {
 			System.out.println("Closest nodes: "+closestNodes.get(0)+", "+closestNodes.get(1)+" ("+closestDistance+")");
 		}
+		time = System.currentTimeMillis() - time;
+		System.err.println("Time in getClosestNode(): " + (double)time / 1000.0);
 		return closestNodes;
 	}
 	

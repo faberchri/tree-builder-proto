@@ -1,0 +1,31 @@
+package client;
+
+public class SimpleDatasetItem implements DatasetItem{
+
+	private final Number value;
+	
+	@Override
+	public DatasetItemType getType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getValue() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getUserId() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getContentId() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+}

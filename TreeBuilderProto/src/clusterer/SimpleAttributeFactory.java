@@ -2,6 +2,8 @@ package clusterer;
 
 import java.util.List;
 
+import client.Normalizer;
+
 class SimpleAttributeFactory<T> extends AttributeFactory<T> {
 
 	private static SimpleAttributeFactory factory = new SimpleAttributeFactory();
@@ -10,7 +12,11 @@ class SimpleAttributeFactory<T> extends AttributeFactory<T> {
 		// singleton
 	}
 	
-	public static  AttributeFactory getInstance() {
+	public static  AttributeFactory getInstance(Normalizer normalizer) {
+		if (normalizer == null && factory.getNormalizer() != null) {
+			return factory;			
+		}
+		factory.setNormalizer(normalizer);
 		return factory;
 	}
 	

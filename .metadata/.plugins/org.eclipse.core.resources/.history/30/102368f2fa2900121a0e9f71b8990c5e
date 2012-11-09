@@ -1,0 +1,19 @@
+package client;
+
+public class IntegerNormalizer implements Normalizer<Integer> {
+	
+	private final int minValue;
+	private final int maxValue;
+	
+	public IntegerNormalizer(int minValue, int maxValue) {
+		this.minValue = minValue;
+		this.maxValue = maxValue;
+	}
+	
+	@Override
+	public double normalizeRating(Integer rating) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+}

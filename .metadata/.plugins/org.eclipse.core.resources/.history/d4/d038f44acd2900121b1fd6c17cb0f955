@@ -1,0 +1,9 @@
+package client;
+
+public interface DatasetItem {
+
+	public DatasetItemType getType();
+	public int getUserId();
+	public int getContentId();
+	public int getValue(); // i.e. rating
+}

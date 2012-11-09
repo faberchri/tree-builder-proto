@@ -7,45 +7,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
-public class GrouplensDataset<T extends Number> implements Dataset<T> {
+import Datasets.DatasetLocator;
+
+public class GrouplensDataset implements Dataset<Integer> {
 	
-	Map<Integer, List<Integer>> userMap = new HashMap<Integer, List<Integer>>();
-	Map<Integer, List<Integer>> movieMap = new HashMap<Integer, List<Integer>>();
-
+	private List<DatasetItem<Integer>> datasetItems = new ArrayList<DatasetItem<Integer>>();
 	
-	@Override
-	public ListIterator<List<T>> iterateOverUsers() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ListIterator<List<T>> iterateOverContentItems() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public int getNumberOfUsers() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int getNumberOfContentItems() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+	private Normalizer<Integer> normalizer = new IntegerNormalizer(1, 5);
 	
 	public GrouplensDataset(File datasetFile) {
 		try {
 			InputStream input;
 			if (datasetFile == null) {
-				input = this.getClass().getResourceAsStream("u1.base");
+				input = DatasetLocator.getDataset("Grouplens/u1.base");// this.getClass().getResourceAsStream("u1.base");
 			} else {
 				input = new FileInputStream(datasetFile);
 			}
@@ -62,7 +41,7 @@ public class GrouplensDataset<T extends Number> implements Dataset<T> {
 			int currentUser = -1;
 			int currentItem = -1;
 			int currentRating = -1;
-			int timeStamp = -1;
+			long timeStamp = -1;
 			List<Character> charLi = new ArrayList<Character>();
 			while (in != -1) {
 				charLi.add((char)in);
@@ -83,16 +62,23 @@ public class GrouplensDataset<T extends Number> implements Dataset<T> {
 	}
 	
 	private void extractData(String entry) {
-//		String[] fields = entry.split("\t");
-//		Integer[] intFields = new Integer[fields.length];
-//		for (int i = 0; i < fields.length; i++) {			
-//			intFields[i] = Integer.parseInt(fields[i]);			
-//		}
-//		if (userMap.containsKey(intFields[0])) {
-//			userMap.get(intFields[0]).add(e)
-//		} else {
-//			
-//		}
+		String[] fields = entry.split("\t");
+		Integer[] intFields = new Integer[fields.length];
+		for (int i = 0; i < fields.length; i++) {
+			if (i != fields.length - 1 ) {
+				intFields[i] = Integer.parseInt(fields[i]);		
+			}
+		}
+		datasetItems.add(new SimpleDatasetItem<Integer>(intFields[2], intFields[0], intFields[1]));
 	}
 
+	@Override
+	public Iterator<DatasetItem<Integer>> iterateOverDatasetItems() {
+		return datasetItems.iterator();
+	}
+
+	@Override
+	public Normalizer<Integer> getNormalizer() {
+		return normalizer;
+	}
 }

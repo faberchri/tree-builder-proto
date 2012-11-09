@@ -1,0 +1,23 @@
+package clusterer;
+
+import java.util.List;
+
+import client.Normalizer;
+
+abstract class AttributeFactory<T> {
+	public abstract Attribute createAttribute(T rating); // single node
+	public abstract Attribute createAttribute(List<Attribute> attributes); // group node
+	
+	private final Normalizer<T> normalizer;
+	
+	public AttributeFactory(Normalizer<T> normalizer) {
+		this.normalizer = normalizer;
+	}
+	
+	double normalizeInput(T inp) {
+		if (normalizer == null) {
+			return ((Double)inp).doubleValue();
+		}
+		return normalizer.normalizeRating(inp);
+	}
+}
