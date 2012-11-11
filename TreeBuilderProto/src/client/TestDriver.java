@@ -1,5 +1,12 @@
 package client;
 
+import java.awt.Container;
+import java.util.Set;
+
+import javax.swing.JFrame;
+
+import visualization.VisualizationBuilder;
+import clusterer.Node;
 import clusterer.TreeBuilder;
 
 public class TestDriver {
@@ -8,15 +15,15 @@ public class TestDriver {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		
+		// Get Data
 		RandomDataset ds = new RandomDataset();
 		ds.printRandomMatrix();
+		
+		// Build Cluster
 		TreeBuilder<Double> treeBuilder = new TreeBuilder<Double>(ds);
 		treeBuilder.cluster();
-		
-//		treeBuilder.printAllOpenUserNodes();
-//		treeBuilder.printAllOpenMovieNodes();
-//		treeBuilder.getClosestOpenUserNodes();
-//		treeBuilder.getClosestOpenMovieNodes();
+		treeBuilder.visualize();
 	}
 
 }

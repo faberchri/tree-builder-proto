@@ -1,42 +1,295 @@
 package visualization;
 
 import client.Dataset;
+import clusterer.Node;
 import clusterer.NodeFactory;
-import clusterer.SimpleAttributeFactory;
 import clusterer.SimpleNodeDistanceCalculator;
-import edu.uci.ics.jung.graph.Graph;
+import clusterer.TreeBuilder;
 
-public class VisualizationBuilder {
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GridLayout;
+import java.awt.Shape;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Point2D;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import javax.swing.BorderFactory;
+import javax.swing.JApplet;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JToggleButton;
+
+import org.apache.commons.collections15.Factory;
+import org.apache.commons.collections15.functors.ConstantTransformer;
+
+import edu.uci.ics.jung.algorithms.layout.PolarPoint;
+import edu.uci.ics.jung.algorithms.layout.RadialTreeLayout;
+import edu.uci.ics.jung.algorithms.layout.TreeLayout;
+import edu.uci.ics.jung.graph.DelegateForest;
+import edu.uci.ics.jung.graph.DelegateTree;
+import edu.uci.ics.jung.graph.DirectedGraph;
+import edu.uci.ics.jung.graph.DirectedSparseMultigraph;
+//import edu.uci.ics.jung.graph.DirectedSparseMultigraph;
+import edu.uci.ics.jung.graph.Forest;
+//import edu.uci.ics.jung.graph.DelegateForest;
+//import edu.uci.ics.jung.graph.DelegateTree;
+import edu.uci.ics.jung.graph.Tree;
+import edu.uci.ics.jung.visualization.GraphZoomScrollPane;
+import edu.uci.ics.jung.visualization.Layer;
+import edu.uci.ics.jung.visualization.VisualizationServer;
+import edu.uci.ics.jung.visualization.VisualizationViewer;
+import edu.uci.ics.jung.visualization.control.CrossoverScalingControl;
+import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
+import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
+import edu.uci.ics.jung.visualization.control.ScalingControl;
+import edu.uci.ics.jung.visualization.decorators.EdgeShape;
+import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
+import edu.uci.ics.jung.visualization.layout.LayoutTransition;
+import edu.uci.ics.jung.visualization.util.Animator;
+
+
+@SuppressWarnings("serial")
+public class VisualizationBuilder extends JApplet {
 	
-	//private Dataset<T> dataset; 
-	
-	public VisualizationBuilder(Dataset<T> dataset) {
-		//this.dataset = dataset;
-	}
-	
-	   // Graph<V, E> where V is the type of the vertices 
-    // and E is the type of the edges
-    Graph<Integer, String> g = new SparseMultigraph<Integer, String>();
-    // Add some vertices. From above we defined these to be type Integer.
-    g.addVertex((Integer)1);
-    g.addVertex((Integer)2);
-    g.addVertex((Integer)3); 
-    // Add some edges. From above we defined these to be of type String
-    // Note that the default is for undirected edges.
-    g.addEdge("Edge-A", 1, 2); // Note that Java 1.5 auto-boxes primitives
-    g.addEdge("Edge-B", 2, 3);       
-    // Let's see what we have. Note the nice output from the
-    // SparseMultigraph<V,E> toString() method
-    System.out.println("The graph g = " + g.toString());
-    // Note that we can use the same nodes and edges in two different graphs.
-    Graph<Integer, String> g2 = new SparseMultigraph<Integer, String>();
-    g2.addVertex((Integer)1);
-    g2.addVertex((Integer)2);
-    g2.addVertex((Integer)3); 
-    g2.addEdge("Edge-A", 1,3);
-    g2.addEdge("Edge-B", 2,3, EdgeType.DIRECTED);
-    g2.addEdge("Edge-C", 3, 2, EdgeType.DIRECTED);
-    g2.addEdge("Edge-P", 2,3); // A parallel edge
-    System.out.println("The graph g2 = " + g2.toString()); 
+	private Set<Node> rootNodes = new HashSet<Node>();
+
+	    /**
+	     * the graph
+	     */
+	    Forest<String,Integer> graph;
+	    
+	    Factory<DirectedGraph<String,Integer>> graphFactory = 
+	    	new Factory<DirectedGraph<String,Integer>>() {
+
+				public DirectedGraph<String, Integer> create() {
+					return new DirectedSparseMultigraph<String,Integer>();
+				}
+			};
+				
+		Factory<Tree<String,Integer>> treeFactory =
+			new Factory<Tree<String,Integer>> () {
+
+			public Tree<String, Integer> create() {
+				return new DelegateTree<String,Integer>(graphFactory);
+			}
+		};
+		
+		Factory<Integer> edgeFactory = new Factory<Integer>() {
+			int i=0;
+			public Integer create() {
+				return i++;
+			}};
+	    
+	    Factory<String> vertexFactory = new Factory<String>() {
+	    	int i=0;
+			public String create() {
+				return "V"+i++;
+			}};
+
+	    /**
+	     * the visual component and renderer for the graph
+	     */
+	    VisualizationViewer<String,Integer> vv;
+	    
+	    VisualizationServer.Paintable rings;
+	    
+	    String root;
+	    
+	    TreeLayout<String,Integer> treeLayout;
+	    
+	    RadialTreeLayout<String,Integer> radialLayout;
+
+	    public void setRootNodes(Set<Node> rootNodes) {
+			this.rootNodes = rootNodes;
+		}
+
+		public VisualizationBuilder() {
+
+	        
+	        // create a simple graph for the demo
+	        graph = new DelegateForest<String,Integer>();
+
+	        createTree();
+	        
+	        treeLayout = new TreeLayout<String,Integer>(graph);
+	        radialLayout = new RadialTreeLayout<String,Integer>(graph);
+	        radialLayout.setSize(new Dimension(600,600));
+	        vv =  new VisualizationViewer<String,Integer>(treeLayout, new Dimension(600,600));
+	        vv.setBackground(Color.white);
+	        vv.getRenderContext().setEdgeShapeTransformer(new EdgeShape.Line());
+	        vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller());
+	        // add a listener for ToolTips
+	        vv.setVertexToolTipTransformer(new ToStringLabeller());
+	        vv.getRenderContext().setArrowFillPaintTransformer(new ConstantTransformer(Color.lightGray));
+	        rings = new Rings();
+
+	        Container content = getContentPane();
+	        final GraphZoomScrollPane panel = new GraphZoomScrollPane(vv);
+	        content.add(panel);
+	        
+	        final DefaultModalGraphMouse graphMouse = new DefaultModalGraphMouse();
+
+	        vv.setGraphMouse(graphMouse);
+	        
+	        JComboBox modeBox = graphMouse.getModeComboBox();
+	        modeBox.addItemListener(graphMouse.getModeListener());
+	        graphMouse.setMode(ModalGraphMouse.Mode.TRANSFORMING);
+
+	        final ScalingControl scaler = new CrossoverScalingControl();
+
+	        JButton plus = new JButton("+");
+	        plus.addActionListener(new ActionListener() {
+	            public void actionPerformed(ActionEvent e) {
+	                scaler.scale(vv, 1.1f, vv.getCenter());
+	            }
+	        });
+	        JButton minus = new JButton("-");
+	        minus.addActionListener(new ActionListener() {
+	            public void actionPerformed(ActionEvent e) {
+	                scaler.scale(vv, 1/1.1f, vv.getCenter());
+	            }
+	        });
+	        
+	        JToggleButton radial = new JToggleButton("Radial");
+	        radial.addItemListener(new ItemListener() {
+
+				public void itemStateChanged(ItemEvent e) {
+					if(e.getStateChange() == ItemEvent.SELECTED) {
+						
+						LayoutTransition<String,Integer> lt =
+							new LayoutTransition<String,Integer>(vv, treeLayout, radialLayout);
+						Animator animator = new Animator(lt);
+						animator.start();
+						vv.getRenderContext().getMultiLayerTransformer().setToIdentity();
+						vv.addPreRenderPaintable(rings);
+					} else {
+						LayoutTransition<String,Integer> lt =
+							new LayoutTransition<String,Integer>(vv, radialLayout, treeLayout);
+						Animator animator = new Animator(lt);
+						animator.start();
+						vv.getRenderContext().getMultiLayerTransformer().setToIdentity();
+						vv.removePreRenderPaintable(rings);
+					}
+					vv.repaint();
+				}});
+
+	        JPanel scaleGrid = new JPanel(new GridLayout(1,0));
+	        scaleGrid.setBorder(BorderFactory.createTitledBorder("Zoom"));
+
+	        JPanel controls = new JPanel();
+	        scaleGrid.add(plus);
+	        scaleGrid.add(minus);
+	        controls.add(radial);
+	        controls.add(scaleGrid);
+	        controls.add(modeBox);
+
+	        content.add(controls, BorderLayout.SOUTH);
+	    }
+	    
+	    class Rings implements VisualizationServer.Paintable {
+	    	
+	    	Collection<Double> depths;
+	    	
+	    	public Rings() {
+	    		depths = getDepths();
+	    	}
+	    	
+	    	private Collection<Double> getDepths() {
+	    		Set<Double> depths = new HashSet<Double>();
+	    		Map<String,PolarPoint> polarLocations = radialLayout.getPolarLocations();
+	    		for(String v : graph.getVertices()) {
+	    			PolarPoint pp = polarLocations.get(v);
+	    			depths.add(pp.getRadius());
+	    		}
+	    		return depths;
+	    	}
+
+			public void paint(Graphics g) {
+				g.setColor(Color.lightGray);
+			
+				Graphics2D g2d = (Graphics2D)g;
+				Point2D center = radialLayout.getCenter();
+
+				Ellipse2D ellipse = new Ellipse2D.Double();
+				for(double d : depths) {
+					ellipse.setFrameFromDiagonal(center.getX()-d, center.getY()-d, 
+							center.getX()+d, center.getY()+d);
+					Shape shape = vv.getRenderContext().getMultiLayerTransformer().getTransformer(Layer.LAYOUT).transform(ellipse);
+					g2d.draw(shape);
+				}
+			}
+
+			public boolean useTransform() {
+				return true;
+			}
+	    }
+	    
+	    /**
+	     * 
+	     */
+	    private void createTree() {
+	    	
+	    	//Set<Node> rootNodes = getRootNodes();
+			System.out.println("Gršsse Root VB this: "+rootNodes.size());
+			
+		 	Iterator children = null;
+		 	Set<Node> childrenSet = new HashSet<Node>();
+			for (Node root : rootNodes) {
+				
+				String rootID = String.valueOf(root.getId());
+		    	
+				// Top Vertex
+				graph.addVertex(rootID);
+					
+            	children = root.getChildren();
+            	while(children.hasNext()){
+            		System.out.println("success");
+            		Node child = (Node) children.next();
+            		String childID = String.valueOf(child.getId());
+            		graph.addEdge(edgeFactory.create(), rootID,childID);
+            		childrenSet.add((Node)children.next());
+            	}
+            }
+            
+            
+	 //   	graph.addEdge(edgeFactory.create(), "V0", "V1");
+	    	
+//	    	graph.addVertex("V0");
+//	    	graph.addEdge(edgeFactory.create(), "V0", "V1");
+//	    	graph.addEdge(edgeFactory.create(), "V0", "V2");
+//	    	graph.addEdge(edgeFactory.create(), "V1", "V4");
+//	    	graph.addEdge(edgeFactory.create(), "V2", "V3");
+//	    	graph.addEdge(edgeFactory.create(), "V2", "V5");
+//	    	graph.addEdge(edgeFactory.create(), "V4", "V6");
+//	    	graph.addEdge(edgeFactory.create(), "V4", "V7");
+//	    	graph.addEdge(edgeFactory.create(), "V3", "V8");
+//	    	graph.addEdge(edgeFactory.create(), "V6", "V9");
+//	    	graph.addEdge(edgeFactory.create(), "V4", "V10");
+	       	
+	    }
+	    
+//	    public Set<Node> getRootNodes() {
+//	    	return rootNodes;
+//	    }
+	    
+		public int printRootSize() {
+			return rootNodes.size();
+		}
+
 
 }
