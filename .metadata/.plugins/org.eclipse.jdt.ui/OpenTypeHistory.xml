@@ -2,6 +2,9 @@
 <typeInfoHistroy>
 <typeInfo handle="=TreeBuilderProto/src&lt;clusterer{NodeDistanceCalculator.java[NodeDistanceCalculator" modifiers="513" timestamp="1352064339000"/>
 <typeInfo handle="=TreeBuilderProto/\/System\/Library\/Java\/Extensions\/j3dcore.jar&lt;javax.media.j3d(NodeComponentUpdate.class[NodeComponentUpdate" modifiers="1536" timestamp="1310672609000"/>
-<typeInfo handle="=TreeBuilderProto/src&lt;clusterer{NodeFactory.java[NodeFactory" modifiers="1" timestamp="1352238023000"/>
+<typeInfo handle="=TreeBuilderProto/src&lt;clusterer{NodeFactory.java[NodeFactory" modifiers="1" timestamp="1352318087000"/>
 <typeInfo handle="=TreeBuilderProto/\/Library\/Java\/JavaVirtualMachines\/jdk1.7.0_09.jdk\/Contents\/Home\/jre\/lib\/rt.jar&lt;java.util(Comparator.class[Comparator" modifiers="1537" timestamp="1348548812000"/>
+<typeInfo handle="=TreeBuilderProto/src&lt;clusterer{TreeBuilder.java[TreeBuilder" modifiers="17" timestamp="1352319689000"/>
+<typeInfo handle="=TreeBuilderProto/src&lt;clusterer{AttributeFactory.java[AttributeFactory" modifiers="1024" timestamp="1352312788000"/>
+<typeInfo handle="=TreeBuilderProto/src&lt;client{Dataset.java[Dataset" modifiers="513" timestamp="1352310599000"/>
 </typeInfoHistroy>

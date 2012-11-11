@@ -1,0 +1,32 @@
+package client;
+
+import java.util.List;
+import java.util.ListIterator;
+
+public class GrouplensDataset<T extends Number> implements Dataset<T> {
+
+	@Override
+	public ListIterator<List<T>> iterateOverUsers() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ListIterator<List<T>> iterateOverContentItems() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getNumberOfUsers() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getNumberOfContentItems() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+}
