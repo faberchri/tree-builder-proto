@@ -114,17 +114,13 @@ public class VisualizationBuilder extends JApplet {
 	    
 	    RadialTreeLayout<String,Integer> radialLayout;
 
-	    public void setRootNodes(Set<Node> rootNodes) {
-			this.rootNodes = rootNodes;
-		}
-
-		public VisualizationBuilder() {
+		public VisualizationBuilder(Set<Node> movieNodes, Set<Node> userNodes) {
 
 	        
 	        // create a simple graph for the demo
 	        graph = new DelegateForest<String,Integer>();
 
-	        createTree();
+	        createTree(movieNodes,userNodes);
 	        
 	        treeLayout = new TreeLayout<String,Integer>(graph);
 	        radialLayout = new RadialTreeLayout<String,Integer>(graph);
@@ -240,56 +236,49 @@ public class VisualizationBuilder extends JApplet {
 	    }
 	    
 	    /**
+	     * @param userNodes 
+	     * @param rootNodes 
 	     * 
 	     */
-	    private void createTree() {
-	    	
-	    	//Set<Node> rootNodes = getRootNodes();
-			System.out.println("Gršsse Root VB this: "+rootNodes.size());
-			
-		 	Iterator children = null;
-		 	Set<Node> childrenSet = new HashSet<Node>();
-			for (Node root : rootNodes) {
+	    private void createTree(Set<Node> movieNodes, Set<Node> userNodes) {
+		 	
+		 	// Build movie Nodes
+			for (Node movieNode : movieNodes) {
 				
-				String rootID = String.valueOf(root.getId());
-		    	
-				// Top Vertex
-				graph.addVertex(rootID);
-					
-            	children = root.getChildren();
-            	while(children.hasNext()){
-            		System.out.println("success");
-            		Node child = (Node) children.next();
-            		String childID = String.valueOf(child.getId());
-            		graph.addEdge(edgeFactory.create(), rootID,childID);
-            		childrenSet.add((Node)children.next());
-            	}
+				// Create first Element of Tree
+				String firstID = String.valueOf(movieNode.getId());
+				graph.addVertex(firstID);
+				
+				// Start recursive build of Tree
+			 	processChildren(movieNode);
             }
-            
-            
-	 //   	graph.addEdge(edgeFactory.create(), "V0", "V1");
-	    	
-//	    	graph.addVertex("V0");
-//	    	graph.addEdge(edgeFactory.create(), "V0", "V1");
-//	    	graph.addEdge(edgeFactory.create(), "V0", "V2");
-//	    	graph.addEdge(edgeFactory.create(), "V1", "V4");
-//	    	graph.addEdge(edgeFactory.create(), "V2", "V3");
-//	    	graph.addEdge(edgeFactory.create(), "V2", "V5");
-//	    	graph.addEdge(edgeFactory.create(), "V4", "V6");
-//	    	graph.addEdge(edgeFactory.create(), "V4", "V7");
-//	    	graph.addEdge(edgeFactory.create(), "V3", "V8");
-//	    	graph.addEdge(edgeFactory.create(), "V6", "V9");
-//	    	graph.addEdge(edgeFactory.create(), "V4", "V10");
+			
+		 	// Build user Nodes
+//			for (Node userNode : userNodes) {
+//				
+//				// Create first Element of Tree
+//				String firstID = String.valueOf(userNode.getId());
+//				graph.addVertex(firstID);
+//				
+//				// Start recursive build of Tree
+//			 	processChildren(userNode);
+//            }
 	       	
 	    }
 	    
-//	    public Set<Node> getRootNodes() {
-//	    	return rootNodes;
-//	    }
-	    
-		public int printRootSize() {
-			return rootNodes.size();
-		}
-
-
+	    private void processChildren(Node parent) {
+	    	
+	    	//System.out.println("processing visualization...");
+		 	
+	    	String parentID = String.valueOf(parent.getId());
+	    	Set<Node>children = parent.getChildrenSet();
+	    	
+	    	if(children != null && children.size() > 0){
+		       	for (Node child : children) {
+	        		String childID = String.valueOf(child.getId());
+	        		graph.addEdge(edgeFactory.create(),parentID,childID);
+	        		processChildren(child);
+	        	}
+	    	}
+	    }
 }

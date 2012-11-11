@@ -25,7 +25,6 @@ public final class TreeBuilder<T extends Number> {
 		
 	private Set<Node> userNodes = new HashSet<Node>();	
 	private Set<Node> movieNodes = new HashSet<Node>();
-	private Set<Node> rootNodes = new HashSet<Node>();
 		
 	private NodeFactory factory;
 	private AttributeFactory<T> attributeFactory;
@@ -49,20 +48,13 @@ public final class TreeBuilder<T extends Number> {
 			printAllOpenMovieNodes();
 		} 
 		
-		// Root Nodes Set anlegen
-		Set<Node> rootNodes = new HashSet<Node>();
-		rootNodes.addAll(movieNodes);
-		rootNodes.addAll(userNodes);
-		this.rootNodes = rootNodes;
-		
 		return null; // FIXME
 	}
 
 	public void visualize() {
 		
 		// Instantiate VisualizationBuilder
-		VisualizationBuilder vb = new VisualizationBuilder();
-		vb.setRootNodes(rootNodes);
+		VisualizationBuilder vb = new VisualizationBuilder(movieNodes,userNodes);
 		
 		// Swing Visualization
         JFrame frame = new JFrame();
