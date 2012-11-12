@@ -1,8 +1,0 @@
-package client;
-
-import java.util.Iterator;
-
-public interface Dataset <T> {
-	public Iterator<T> iterateOverUser();
-	public Iterator<T> iterateOverContent();
-}

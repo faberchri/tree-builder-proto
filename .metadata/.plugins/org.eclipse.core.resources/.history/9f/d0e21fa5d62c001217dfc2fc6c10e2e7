@@ -1,0 +1,277 @@
+package clusterer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import client.Dataset;
+import client.DatasetItem;
+
+
+public final class TreeBuilder<T extends Number> {
+	
+	private Dataset<T> dataset; 
+		
+	private Set<Node> userNodes = new  HashSet<Node>(); //Collections.newSetFromMap(new ConcurrentHashMap<Node,Boolean>());
+	private Set<Node> movieNodes = new HashSet<Node>(); //Collections.newSetFromMap(new ConcurrentHashMap<Node,Boolean>());
+		
+	private NodeFactory factory;
+	private AttributeFactory<T> attributeFactory;
+		
+	private NodeUpdater nodeUpdater;
+	
+	private ClosestNodesSearcher closestNodesSearcher;
+	
+	public TreeBuilder(Dataset<T> dataset, NodeDistanceCalculator ndcUsers, NodeDistanceCalculator ndcContents, NodeUpdater nodeUpdater, ClosestNodesSearcher cns) {
+		this.dataset = dataset;
+		this.factory = new NodeFactory(ndcUsers, ndcContents);
+		this.attributeFactory = SimpleAttributeFactory.getInstance(dataset.getNormalizer());
+		this.nodeUpdater = nodeUpdater;
+		this.closestNodesSearcher = cns;
+	}
+	
+	public Node cluster() {
+		initLeafNodes(dataset);
+		int cycleCount = 0;
+		long startTime = System.currentTimeMillis();
+		while (userNodes.size() > 2 && movieNodes.size() > 2) {
+			List<Node> cN = getClosestOpenUserNodes();
+//			getClosestOpenUserNodes();
+//			System.out.println("ClosestOpenUserNodes: "+ cN);
+			mergeNodes(cN, userNodes);
+			double elapsedTime = ((double)(System.currentTimeMillis() - startTime)) / 1000.0;
+			System.out.println("cycle "+ cycleCount + "| number of open user nodes: " + userNodes.size() + "\t elapsed time [s]: "+ elapsedTime);
+//			printAllOpenUserNodes();
+			cN = getClosestOpenMovieNodes();
+//			getClosestOpenMovieNodes();
+//			System.out.println("ClosestOpenMovieNodes: "+ cN);
+			mergeNodes(cN, movieNodes);
+			elapsedTime = ((double)(System.currentTimeMillis() - startTime)) / 1000.0;
+			System.out.println("cycle "+ cycleCount + "| number of open movie nodes: " + movieNodes.size() + "\t elapsed time [s]: "+ elapsedTime);
+//			printAllOpenMovieNodes();
+			cycleCount++;
+		} 
+		
+//		getClosestOpenMovieNodes();
+//		getClosestNodesParallel(movieNodes);
+		return null; // FIXME
+	}
+	
+		
+	private void initLeafNodes(Dataset<T> dataset) {
+
+		Map<Integer, List<DatasetItem<T>>> usersMap = new HashMap<Integer, List<DatasetItem<T>>>();
+		Map<Integer, List<DatasetItem<T>>> contentsMap = new HashMap<Integer, List<DatasetItem<T>>>();
+		
+		Iterator<DatasetItem<T>> it = dataset.iterateOverDatasetItems();
+		while(it.hasNext()) {
+			DatasetItem<T> datasetItem = it.next();
+			if (usersMap.containsKey(datasetItem.getUserId())) {
+				usersMap.get(datasetItem.getUserId()).add(datasetItem);
+			} else {
+				List<DatasetItem<T>> li = new ArrayList<DatasetItem<T>>();
+				li.add(datasetItem);
+				usersMap.put(datasetItem.getUserId(), li);
+			}
+			if (contentsMap.containsKey(datasetItem.getContentId())) {
+				contentsMap.get(datasetItem.getContentId()).add(datasetItem);
+			} else {
+				List<DatasetItem<T>> li = new ArrayList<DatasetItem<T>>();
+				li.add(datasetItem);
+				contentsMap.put(datasetItem.getContentId(), li);
+			}
+		}
+		
+		Map<Integer, Node> usersNodeMap = new HashMap<Integer, Node>();
+		for (Integer i : usersMap.keySet()) {
+			usersNodeMap.put(i, UserNode.getFactory().createNode(null, null));
+		}
+		
+		Map<Integer, Node> contentsNodeMap = new HashMap<Integer, Node>();
+		for (Integer i : contentsMap.keySet()) {
+			contentsNodeMap.put(i, MovieNode.getFactory().createNode(null, null));
+		}
+		
+		for (Map.Entry<Integer, List<DatasetItem<T>>> entry : usersMap.entrySet()) {
+			Map<Node, Attribute> attributes = new HashMap<Node, Attribute>();
+			for (DatasetItem<T> di : entry.getValue()) {
+				attributes.put(contentsNodeMap.get(di.getContentId()), attributeFactory.createAttribute(di.getValue()));
+			}
+			usersNodeMap.get(entry.getKey()).setAttributes(attributes);
+			userNodes.add(usersNodeMap.get(entry.getKey()));
+		}
+		for (Map.Entry<Integer, List<DatasetItem<T>>> entry : contentsMap.entrySet()) {
+			Map<Node, Attribute> attributes = new HashMap<Node, Attribute>();
+			for (DatasetItem<T> di : entry.getValue()) {
+				attributes.put(usersNodeMap.get(di.getUserId()), attributeFactory.createAttribute(di.getValue()));
+			}
+			contentsNodeMap.get(entry.getKey()).setAttributes(attributes);
+			movieNodes.add(contentsNodeMap.get(entry.getKey()));
+		}		
+				
+	}
+	
+			
+//	private List<Node> getClosestNodes(Set<? extends Node> openNodes) {
+//		long time = System.currentTimeMillis();
+//		double closestDistance = Double.MAX_VALUE;
+//		List<Node> closestNodes = new ArrayList<Node>();
+//		Set<Node> subSet = new HashSet<Node>(openNodes);
+//		for (Node node : openNodes) {
+//			subSet.remove(node);
+//			for (Node node2 : subSet) {
+//				double tmpDi = node.getDistance(node2);
+//				if (tmpDi < closestDistance){
+//					closestDistance = tmpDi;
+//					closestNodes.clear();
+//					closestNodes.add(node);
+//					closestNodes.add(node2);
+//				}
+////				System.out.println("calculation: "+node+", "+node2+" ("+tmpDi+")");
+//			}
+//		}
+//		if (closestNodes.size() > 1) {
+//			System.out.println("Closest nodes: "+closestNodes.get(0)+", "+closestNodes.get(1)+" ("+closestDistance+")");
+//		}
+//		time = System.currentTimeMillis() - time;
+//		System.out.println("Time in getClosestNode() single: " + (double)time / 1000.0);
+//		return closestNodes;
+//	}
+//	
+//	private List<Node> getClosestNodesParallel(Set<? extends Node> openNodes) {
+////		long time = System.currentTimeMillis();
+//		
+//		int numOfThreads = Runtime.getRuntime().availableProcessors();
+//		
+//		List<Node> nLi = new ArrayList<Node>(openNodes);
+//		int longIndex = 0;
+//		int shortIndex = nLi.size() -1 ;
+//		
+//		List<List<Integer>> jLi = new ArrayList<List<Integer>>(numOfThreads);
+//		for (int i = 0; i < numOfThreads; i++) {
+//			jLi.add(new ArrayList<Integer>());
+//		}
+//
+//		int currentJLi = 0;
+//		
+//		while (longIndex <= shortIndex) {
+//			if (currentJLi >= numOfThreads) {
+//				currentJLi = 0;
+//			}
+//			jLi.get(currentJLi).add(new Integer(longIndex));
+//			jLi.get(currentJLi).add(new Integer(shortIndex));
+//			currentJLi++;
+//			longIndex++;
+//			shortIndex--;
+//		}
+//		
+//		ExecutorService taskExecutor = Executors.newFixedThreadPool(numOfThreads);
+//		List<ClosestNodeCalculator> taskList = new ArrayList<ClosestNodeCalculator>();
+//		for (List<Integer> list : jLi) {
+//			ClosestNodeCalculator task = new ClosestNodeCalculator(list, nLi);
+//			taskList.add(task);
+//			taskExecutor.execute(task);
+//		}
+//		taskExecutor.shutdown();
+//		try {
+//			taskExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		NodeDistance bestND = null;
+//		for (ClosestNodeCalculator closestNodeCalculator : taskList) {
+//			if (bestND == null || bestND.getDistance() > closestNodeCalculator.getBestNodeDistance().getDistance()) {
+//				bestND = closestNodeCalculator.getBestNodeDistance();
+//			}
+//		}
+//
+//		List<Node> res = bestND.getBothNode();
+//
+//		System.out.println("Closest nodes: "+res.get(0)+", "+res.get(1)+" ("+bestND.getDistance()+")");
+//
+////		time = System.currentTimeMillis() - time;
+////		System.out.println("Time in getClosestNode() parallel: " + (double)time / 1000.0);
+//		return res;
+//	}
+//	
+//	private class ClosestNodeCalculator extends Thread{
+//		
+//		private final List<Integer> jLi;
+//		private final List<Node> nLi;
+//		
+//		NodeDistance bestNodeDistance = null;
+//				
+//		public ClosestNodeCalculator(List<Integer> jLi, List<Node> nLi) {
+//			this.jLi = jLi;
+//			this.nLi = nLi;
+//		}
+//
+//		@Override
+//		public void run() {
+//			for (Integer i : jLi) {
+//				if (i == nLi.size() - 1) continue;
+//				NodeDistance tmpDi = nLi.get(i).getDistanceToClosestNode(nLi.subList(i + 1, nLi.size()));
+//				if (bestNodeDistance == null || bestNodeDistance.getDistance() > tmpDi.getDistance()) {
+//					bestNodeDistance = tmpDi;
+//				}
+//			}			
+//		}
+//		
+//		public NodeDistance getBestNodeDistance() {
+//			return bestNodeDistance;
+//		}
+//		
+//	}
+	
+	private void printAllNodesInSet(Set<? extends PrintableNode> set, String nodeNames){
+		System.out.println("-----------------------");
+		System.out.println(nodeNames);
+		PrintableNode[] setArr = set.toArray(new PrintableNode[set.size()]);
+		Arrays.sort(setArr);
+		for (PrintableNode node : setArr) {
+			System.out.println(node.toString()+"|\t"+node.getAttributesString());
+		}
+		System.out.println("-----------------------");
+	}
+	
+	public void printAllOpenUserNodes() {
+		printAllNodesInSet((Set)userNodes, "User Nodes:");
+	}
+	
+	public void printAllOpenMovieNodes() {
+		printAllNodesInSet((Set)movieNodes, "MovieNodes:");
+	}
+	
+	public List<Node> getClosestOpenUserNodes() {
+		return closestNodesSearcher.getClosestNodes(userNodes);
+	}
+		
+	public List<Node> getClosestOpenMovieNodes() {
+		return closestNodesSearcher.getClosestNodes(movieNodes);
+	}
+		
+	private void mergeNodes(List<Node> nodes, Set<Node> openSet) {
+		if (nodes.size() > 1) {
+			Node newNode = nodes.get(0).getNodeFactory().createNode(nodes, attributeFactory);
+			openSet.add(newNode);
+			for (Node node : nodes) {
+				node.setParent(newNode);
+				newNode.addChild(node);
+				if (!openSet.remove(node)) {
+					System.err.println("removal of merged node (" + node + ") from " +openSet +" failed, " + getClass().getSimpleName());
+				}
+			}
+			closestNodesSearcher.setNodeOfLastMerge(newNode);
+			nodeUpdater.updateNodes(newNode);
+		} else {
+			System.err.println("merge attempt with 1 or less nodes, " + getClass().getSimpleName());
+			System.exit(-1);
+		}
+	}
+	
+}

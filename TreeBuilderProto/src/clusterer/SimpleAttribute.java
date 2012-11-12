@@ -1,8 +1,5 @@
 package clusterer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * 
@@ -31,39 +28,7 @@ class SimpleAttribute implements Attribute {
 		this.support = support;
 		this.leafList = leafList;
 	}
-	
-//	public SimpleAttribute(List<Attribute> attributesToCombine) {
-//		int sizeOfNewLeafList = 0;
-//		for (Attribute attribute : attributesToCombine) {
-//			sizeOfNewLeafList += attribute.getLeafList().length;
-//		}		
-//		double[] tmpAr = new double[sizeOfNewLeafList];
-//		int prevAttLength = 0;
-//		for (Attribute attribute : attributesToCombine) {
-//			System.arraycopy(attribute.getLeafList(), 0, tmpAr, prevAttLength, attribute.getLeafList().length);
-//		}
-//		leafList = tmpAr;
-//		
-//		int tmpSup = 0;
-//		for (Attribute attribute : attributesToCombine) {
-//			 tmpSup += attribute.getSupport();
-//		}
-//		this.support = tmpSup;
-//		
-//		double tmpAvg = 0.0;
-//		for (Double avgLi : leafList) {
-//			tmpAvg += avgLi;
-//		}
-//		this.average = tmpAvg / leafList.length;
-//		
-//		double tmpStD = 0.0;
-//		for (Double avgLi : leafList) {
-//			tmpStD += Math.pow((avgLi-this.average),2.0);
-//		}
-//		this.stdDev = Math.sqrt(tmpStD/(leafList.length - 1.0));
-//
-//	}
-	
+		
 	public double getAverage() {
 		return average;
 	}

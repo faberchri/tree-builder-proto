@@ -47,7 +47,6 @@ public class ParallelClosestNodesSearcher implements ClosestNodesSearcher {
 		try {
 			taskExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		NodeDistance bestND = null;

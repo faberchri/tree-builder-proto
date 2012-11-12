@@ -56,14 +56,5 @@ public class UserNodeFactory implements Factory {
 	public NodeDistanceCalculator getNodeDistanceCalculator() {
 		return nodeDistanceCalculator;
 	}
-	
-//	public List<UserNode> createEmptyUserNodes(int numberOfNodes) {
-//		List<UserNode> users = new ArrayList<UserNode>();
-//		for (int i = 0; i < numberOfNodes; i++) {
-//			users.add(new UserNode(getNodeDistanceCalculator()));
-//		}
-//		return users;
-//	}
-
-	
+		
 }

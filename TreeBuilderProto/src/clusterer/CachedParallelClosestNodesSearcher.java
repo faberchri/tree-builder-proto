@@ -52,9 +52,11 @@ public class CachedParallelClosestNodesSearcher implements ClosestNodesSearcher 
 			updateSameHiearchyCache();
 			updateOppositeHiearchyCache();
 			if (openContentNodes.contains(n)) {
+				contentDistanceCache.keySet().retainAll(openContentNodes);
 				result = Collections.min(contentDistanceCache.values());
 
 			} else {
+				userDistanceCache.keySet().retainAll(openUserNodes);
 				result = Collections.min(userDistanceCache.values());
 			}
 //			System.err.println("Err: We found a node, which does not belong to any set in :" + getClass().getSimpleName());
@@ -62,7 +64,7 @@ public class CachedParallelClosestNodesSearcher implements ClosestNodesSearcher 
 //			return null;
 		}
 		List<Node> resLi = result.getBothNode();
-		removeResultFromCache(resLi);
+//		removeResultFromCache(resLi);
 //		PrintableNode[] arr = test.toArray(new PrintableNode[test.size()]);
 //		Arrays.sort(arr, new NodeIdComparator());
 //		for (PrintableNode printableNode : arr) {
@@ -158,7 +160,7 @@ public class CachedParallelClosestNodesSearcher implements ClosestNodesSearcher 
 		}
 	}
 	
-	private void removeResultFromCache(List<Node> resLi) {
+	private void removeMergedNodesFromCache(Node newNode) {
 //		if (userDistanceCache.contains(resLi.get(0))){
 //			for (Node node : resLi) {
 //				userDistanceCache.remove(node);
@@ -168,9 +170,9 @@ public class CachedParallelClosestNodesSearcher implements ClosestNodesSearcher 
 //				contentDistanceCache.remove(node);
 //			}	
 //		}
-		
-		for (Node node : resLi) {
-			System.out.println(node);
+		Iterator<Node> i = newNode.getChildren();
+		while (i.hasNext()) {
+			Node node = (Node) i.next();
 			contentDistanceCache.remove(node);
 			userDistanceCache.remove(node);
 		}
@@ -179,13 +181,14 @@ public class CachedParallelClosestNodesSearcher implements ClosestNodesSearcher 
 	@Override
 	public void setNodeOfLastMerge(Node newNode) {
 		this.nodeCreatedInLastMerge = newNode;
-		
+		removeMergedNodesFromCache(newNode);
 		// and add to cache with closest node
 		if (openUserNodes.contains(newNode)) {
 			userDistanceCache.put(newNode, newNode.getDistanceToClosestNode(new ArrayList<Node>(openUserNodes)));
 		} else {
 			contentDistanceCache.put(newNode,newNode.getDistanceToClosestNode(new ArrayList<Node>(openContentNodes)));
 		}
+
 	}
 		
 	private NodeDistance getClosestNodesByTotalRecalculation(Set<Node> openNodes) {

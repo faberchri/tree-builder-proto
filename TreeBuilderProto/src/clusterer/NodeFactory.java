@@ -10,13 +10,7 @@ public class NodeFactory {
 		UserNode.setFactory(new UserNodeFactory(ndcUsers));
 		MovieNode.setFactory(new ContentNodeFactory(ndcContent));		
 	}
-		
-		
-//	public Node createNode(List<Node> nodesToMerge) {
-//		// not used! empty implementation
-//		return null;
-//	}
-	
+			
 	public List createEmptyContentNodes(int numberOfNodes) {
 		return createEmptyNodes(numberOfNodes, MovieNode.getFactory());
 	}
