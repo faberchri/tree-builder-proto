@@ -15,6 +15,10 @@ public abstract class AbstractNode implements PrintableNode, Comparable<Abstract
 	private Node parent = null;
 	
 	private NodeDistanceCalculator distanceCalculator;
+	
+	private boolean dirty = true;
+	
+	private NodeDistance closestNode = null;
 		
 	public AbstractNode(NodeDistanceCalculator ndc) {
 		this.distanceCalculator = ndc; 
@@ -28,13 +32,22 @@ public abstract class AbstractNode implements PrintableNode, Comparable<Abstract
 		double shortest = Double.MAX_VALUE;
 		Node close = null;
 		for (Node node : list) {
+			if (node.equals(this)) continue;
 			double tmp = this.getDistance(node);
 			if (tmp < shortest) {
 				shortest = tmp;
 				close = node;
 			}
 		}
+//		closestNode = 
 		return new SimpleNodeDistance(shortest, this, close);
+	}
+	
+	public boolean isDirty() {
+		if (closestNode == null) {
+			return true;
+		}
+		return dirty;
 	}
 	
 	String getAttributesString(Map<PrintableNode, Attribute> map) {

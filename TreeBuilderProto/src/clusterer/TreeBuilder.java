@@ -7,9 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import client.Dataset;
 import client.DatasetItem;
@@ -19,19 +16,22 @@ public final class TreeBuilder<T extends Number> {
 	
 	private Dataset<T> dataset; 
 		
-	private Set<Node> userNodes = new HashSet<Node>();	
-	private Set<Node> movieNodes = new HashSet<Node>();
+	private Set<Node> userNodes = new  HashSet<Node>(); //Collections.newSetFromMap(new ConcurrentHashMap<Node,Boolean>());
+	private Set<Node> movieNodes = new HashSet<Node>(); //Collections.newSetFromMap(new ConcurrentHashMap<Node,Boolean>());
 		
 	private NodeFactory factory;
 	private AttributeFactory<T> attributeFactory;
 		
 	private NodeUpdater nodeUpdater;
 	
-	public TreeBuilder(Dataset<T> dataset, NodeDistanceCalculator ndcUsers, NodeDistanceCalculator ndcContents, NodeUpdater nodeUpdater) {
+	private ClosestNodesSearcher closestNodesSearcher;
+	
+	public TreeBuilder(Dataset<T> dataset, NodeDistanceCalculator ndcUsers, NodeDistanceCalculator ndcContents, NodeUpdater nodeUpdater, ClosestNodesSearcher cns) {
 		this.dataset = dataset;
 		this.factory = new NodeFactory(ndcUsers, ndcContents);
 		this.attributeFactory = SimpleAttributeFactory.getInstance(dataset.getNormalizer());
 		this.nodeUpdater = nodeUpdater;
+		this.closestNodesSearcher = cns;
 	}
 	
 	public Node cluster() {
@@ -39,19 +39,19 @@ public final class TreeBuilder<T extends Number> {
 		int cycleCount = 0;
 		long startTime = System.currentTimeMillis();
 		while (userNodes.size() > 2 && movieNodes.size() > 2) {
-			List<Node> cN = getClosestOpenUserNodesParallel();
+			List<Node> cN = getClosestOpenUserNodes();
 //			getClosestOpenUserNodes();
 //			System.out.println("ClosestOpenUserNodes: "+ cN);
 			mergeNodes(cN, userNodes);
 			double elapsedTime = ((double)(System.currentTimeMillis() - startTime)) / 1000.0;
-			System.out.println("number of open user nodes: " + userNodes.size() + "\t elapsed time [s]: "+ elapsedTime);
+			System.out.println("cycle "+ cycleCount + "| number of open user nodes: " + userNodes.size() + "\t elapsed time [s]: "+ elapsedTime);
 //			printAllOpenUserNodes();
-			cN = getClosestOpenMovieNodesParallel();
+			cN = getClosestOpenMovieNodes();
 //			getClosestOpenMovieNodes();
 //			System.out.println("ClosestOpenMovieNodes: "+ cN);
 			mergeNodes(cN, movieNodes);
 			elapsedTime = ((double)(System.currentTimeMillis() - startTime)) / 1000.0;
-			System.out.println("number of open movie nodes: " + movieNodes.size() + "\t elapsed time [s]: "+ elapsedTime);
+			System.out.println("cycle "+ cycleCount + "| number of open movie nodes: " + movieNodes.size() + "\t elapsed time [s]: "+ elapsedTime);
 //			printAllOpenMovieNodes();
 			cycleCount++;
 		} 
@@ -116,117 +116,117 @@ public final class TreeBuilder<T extends Number> {
 	}
 	
 			
-	private List<Node> getClosestNodes(Set<? extends Node> openNodes) {
-		long time = System.currentTimeMillis();
-		double closestDistance = Double.MAX_VALUE;
-		List<Node> closestNodes = new ArrayList<Node>();
-		Set<Node> subSet = new HashSet<Node>(openNodes);
-		for (Node node : openNodes) {
-			subSet.remove(node);
-			for (Node node2 : subSet) {
-				double tmpDi = node.getDistance(node2);
-				if (tmpDi < closestDistance){
-					closestDistance = tmpDi;
-					closestNodes.clear();
-					closestNodes.add(node);
-					closestNodes.add(node2);
-				}
-//				System.out.println("calculation: "+node+", "+node2+" ("+tmpDi+")");
-			}
-		}
-		if (closestNodes.size() > 1) {
-			System.out.println("Closest nodes: "+closestNodes.get(0)+", "+closestNodes.get(1)+" ("+closestDistance+")");
-		}
-		time = System.currentTimeMillis() - time;
-		System.out.println("Time in getClosestNode() single: " + (double)time / 1000.0);
-		return closestNodes;
-	}
-	
-	private List<Node> getClosestNodesParallel(Set<? extends Node> openNodes) {
+//	private List<Node> getClosestNodes(Set<? extends Node> openNodes) {
 //		long time = System.currentTimeMillis();
-		
-		int numOfThreads = Runtime.getRuntime().availableProcessors();
-		
-		List<Node> nLi = new ArrayList<Node>(openNodes);
-		int longIndex = 0;
-		int shortIndex = nLi.size() -1 ;
-		
-		List<List<Integer>> jLi = new ArrayList<List<Integer>>(numOfThreads);
-		for (int i = 0; i < numOfThreads; i++) {
-			jLi.add(new ArrayList<Integer>());
-		}
-
-		int currentJLi = 0;
-		
-		while (longIndex <= shortIndex) {
-			if (currentJLi >= numOfThreads) {
-				currentJLi = 0;
-			}
-			jLi.get(currentJLi).add(new Integer(longIndex));
-			jLi.get(currentJLi).add(new Integer(shortIndex));
-			currentJLi++;
-			longIndex++;
-			shortIndex--;
-		}
-		
-		ExecutorService taskExecutor = Executors.newFixedThreadPool(numOfThreads);
-		List<ClosestNodeCalculator> taskList = new ArrayList<ClosestNodeCalculator>();
-		for (List<Integer> list : jLi) {
-			ClosestNodeCalculator task = new ClosestNodeCalculator(list, nLi);
-			taskList.add(task);
-			taskExecutor.execute(task);
-		}
-		taskExecutor.shutdown();
-		try {
-			taskExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		NodeDistance bestND = null;
-		for (ClosestNodeCalculator closestNodeCalculator : taskList) {
-			if (bestND == null || bestND.getDistance() > closestNodeCalculator.getBestNodeDistance().getDistance()) {
-				bestND = closestNodeCalculator.getBestNodeDistance();
-			}
-		}
-
-		List<Node> res = bestND.getBothNode();
-
-		System.out.println("Closest nodes: "+res.get(0)+", "+res.get(1)+" ("+bestND.getDistance()+")");
-
+//		double closestDistance = Double.MAX_VALUE;
+//		List<Node> closestNodes = new ArrayList<Node>();
+//		Set<Node> subSet = new HashSet<Node>(openNodes);
+//		for (Node node : openNodes) {
+//			subSet.remove(node);
+//			for (Node node2 : subSet) {
+//				double tmpDi = node.getDistance(node2);
+//				if (tmpDi < closestDistance){
+//					closestDistance = tmpDi;
+//					closestNodes.clear();
+//					closestNodes.add(node);
+//					closestNodes.add(node2);
+//				}
+////				System.out.println("calculation: "+node+", "+node2+" ("+tmpDi+")");
+//			}
+//		}
+//		if (closestNodes.size() > 1) {
+//			System.out.println("Closest nodes: "+closestNodes.get(0)+", "+closestNodes.get(1)+" ("+closestDistance+")");
+//		}
 //		time = System.currentTimeMillis() - time;
-//		System.out.println("Time in getClosestNode() parallel: " + (double)time / 1000.0);
-		return res;
-	}
-	
-	private class ClosestNodeCalculator extends Thread{
-		
-		private final List<Integer> jLi;
-		private final List<Node> nLi;
-		
-		NodeDistance bestNodeDistance = null;
-				
-		public ClosestNodeCalculator(List<Integer> jLi, List<Node> nLi) {
-			this.jLi = jLi;
-			this.nLi = nLi;
-		}
-
-		@Override
-		public void run() {
-			for (Integer i : jLi) {
-				if (i == nLi.size() - 1) continue;
-				NodeDistance tmpDi = nLi.get(i).getDistanceToClosestNode(nLi.subList(i + 1, nLi.size()));
-				if (bestNodeDistance == null || bestNodeDistance.getDistance() > tmpDi.getDistance()) {
-					bestNodeDistance = tmpDi;
-				}
-			}			
-		}
-		
-		public NodeDistance getBestNodeDistance() {
-			return bestNodeDistance;
-		}
-		
-	}
+//		System.out.println("Time in getClosestNode() single: " + (double)time / 1000.0);
+//		return closestNodes;
+//	}
+//	
+//	private List<Node> getClosestNodesParallel(Set<? extends Node> openNodes) {
+////		long time = System.currentTimeMillis();
+//		
+//		int numOfThreads = Runtime.getRuntime().availableProcessors();
+//		
+//		List<Node> nLi = new ArrayList<Node>(openNodes);
+//		int longIndex = 0;
+//		int shortIndex = nLi.size() -1 ;
+//		
+//		List<List<Integer>> jLi = new ArrayList<List<Integer>>(numOfThreads);
+//		for (int i = 0; i < numOfThreads; i++) {
+//			jLi.add(new ArrayList<Integer>());
+//		}
+//
+//		int currentJLi = 0;
+//		
+//		while (longIndex <= shortIndex) {
+//			if (currentJLi >= numOfThreads) {
+//				currentJLi = 0;
+//			}
+//			jLi.get(currentJLi).add(new Integer(longIndex));
+//			jLi.get(currentJLi).add(new Integer(shortIndex));
+//			currentJLi++;
+//			longIndex++;
+//			shortIndex--;
+//		}
+//		
+//		ExecutorService taskExecutor = Executors.newFixedThreadPool(numOfThreads);
+//		List<ClosestNodeCalculator> taskList = new ArrayList<ClosestNodeCalculator>();
+//		for (List<Integer> list : jLi) {
+//			ClosestNodeCalculator task = new ClosestNodeCalculator(list, nLi);
+//			taskList.add(task);
+//			taskExecutor.execute(task);
+//		}
+//		taskExecutor.shutdown();
+//		try {
+//			taskExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		NodeDistance bestND = null;
+//		for (ClosestNodeCalculator closestNodeCalculator : taskList) {
+//			if (bestND == null || bestND.getDistance() > closestNodeCalculator.getBestNodeDistance().getDistance()) {
+//				bestND = closestNodeCalculator.getBestNodeDistance();
+//			}
+//		}
+//
+//		List<Node> res = bestND.getBothNode();
+//
+//		System.out.println("Closest nodes: "+res.get(0)+", "+res.get(1)+" ("+bestND.getDistance()+")");
+//
+////		time = System.currentTimeMillis() - time;
+////		System.out.println("Time in getClosestNode() parallel: " + (double)time / 1000.0);
+//		return res;
+//	}
+//	
+//	private class ClosestNodeCalculator extends Thread{
+//		
+//		private final List<Integer> jLi;
+//		private final List<Node> nLi;
+//		
+//		NodeDistance bestNodeDistance = null;
+//				
+//		public ClosestNodeCalculator(List<Integer> jLi, List<Node> nLi) {
+//			this.jLi = jLi;
+//			this.nLi = nLi;
+//		}
+//
+//		@Override
+//		public void run() {
+//			for (Integer i : jLi) {
+//				if (i == nLi.size() - 1) continue;
+//				NodeDistance tmpDi = nLi.get(i).getDistanceToClosestNode(nLi.subList(i + 1, nLi.size()));
+//				if (bestNodeDistance == null || bestNodeDistance.getDistance() > tmpDi.getDistance()) {
+//					bestNodeDistance = tmpDi;
+//				}
+//			}			
+//		}
+//		
+//		public NodeDistance getBestNodeDistance() {
+//			return bestNodeDistance;
+//		}
+//		
+//	}
 	
 	private void printAllNodesInSet(Set<? extends PrintableNode> set, String nodeNames){
 		System.out.println("-----------------------");
@@ -248,21 +248,13 @@ public final class TreeBuilder<T extends Number> {
 	}
 	
 	public List<Node> getClosestOpenUserNodes() {
-		return getClosestNodes(userNodes);
+		return closestNodesSearcher.getClosestNodes(userNodes);
 	}
-	
-	public List<Node> getClosestOpenUserNodesParallel() {
-		return getClosestNodesParallel(userNodes);
-	}
-	
+		
 	public List<Node> getClosestOpenMovieNodes() {
-		return getClosestNodes(movieNodes);
+		return closestNodesSearcher.getClosestNodes(movieNodes);
 	}
-	
-	public List<Node> getClosestOpenMovieNodesParallel() {
-		return getClosestNodesParallel(movieNodes);
-	}
-	
+		
 	private void mergeNodes(List<Node> nodes, Set<Node> openSet) {
 		if (nodes.size() > 1) {
 			Node newNode = nodes.get(0).getNodeFactory().createNode(nodes, attributeFactory);
@@ -270,9 +262,12 @@ public final class TreeBuilder<T extends Number> {
 			for (Node node : nodes) {
 				node.setParent(newNode);
 				newNode.addChild(node);
-				openSet.remove(node);
+				if (!openSet.remove(node)) {
+					System.err.println("removal of merged node (" + node + ") from " +openSet +" failed, " + getClass().getSimpleName());
+				}
 			}
 			nodeUpdater.updateNodes(newNode);
+			closestNodesSearcher.setNodeOfLastMerge(newNode);
 		} else {
 			System.err.println("merge attempt with 1 or less nodes, " + getClass().getSimpleName());
 			System.exit(-1);

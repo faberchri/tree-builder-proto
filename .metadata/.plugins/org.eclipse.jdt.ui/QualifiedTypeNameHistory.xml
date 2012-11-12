@@ -37,7 +37,6 @@
 <fullyQualifiedTypeName name="java.lang.Long"/>
 <fullyQualifiedTypeName name="client.IntegerNormalizer"/>
 <fullyQualifiedTypeName name="client.Normalizer"/>
-<fullyQualifiedTypeName name="java.lang.System"/>
 <fullyQualifiedTypeName name="client.Dataset"/>
 <fullyQualifiedTypeName name="client.GrouplensDataset"/>
 <fullyQualifiedTypeName name="java.sql.NClob"/>
@@ -54,10 +53,11 @@
 <fullyQualifiedTypeName name="clusterer.Node"/>
 <fullyQualifiedTypeName name="java.lang.Integer"/>
 <fullyQualifiedTypeName name="java.util.ArrayList"/>
-<fullyQualifiedTypeName name="clusterer.NodeDistanceCalculator"/>
-<fullyQualifiedTypeName name="clusterer.SimpleNodeDistanceCalculator"/>
-<fullyQualifiedTypeName name="clusterer.NodeUpdater"/>
-<fullyQualifiedTypeName name="clusterer.SimpleNodeUpdater"/>
 <fullyQualifiedTypeName name="java.lang.Double"/>
 <fullyQualifiedTypeName name="clusterer.AttributeFactory"/>
+<fullyQualifiedTypeName name="clusterer.NodeDistanceCalculator"/>
+<fullyQualifiedTypeName name="clusterer.NodeUpdater"/>
+<fullyQualifiedTypeName name="clusterer.SimpleNodeDistanceCalculator"/>
+<fullyQualifiedTypeName name="clusterer.SimpleNodeUpdater"/>
+<fullyQualifiedTypeName name="java.lang.System"/>
 </qualifiedTypeNameHistroy>

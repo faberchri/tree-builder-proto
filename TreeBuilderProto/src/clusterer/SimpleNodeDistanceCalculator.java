@@ -27,6 +27,10 @@ public class SimpleNodeDistanceCalculator implements NodeDistanceCalculator {
 	
 	@Override
 	public double calculateDistance(Node n1, Node n2) {
+		if (! n1.getClass().equals(n2.getClass())) {
+			System.err.println("Calculating distance between two nodes of differnet type in " + this.getClass().getSimpleName());
+			System.exit(-1);
+		}
 		Set<Node> union = new HashSet<Node>(n1.getAttributeKeys());
 		union.addAll(n2.getAttributeKeys());
 		Set<Node> intersect = new HashSet<Node>(n1.getAttributeKeys());

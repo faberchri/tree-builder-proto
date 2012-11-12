@@ -30,12 +30,25 @@ public class SimpleNodeDistance implements NodeDistance {
 		li.add(n2);
 		return li;
 	}
-
+	
 	public SimpleNodeDistance(double distance, Node n1, Node n2) {
 		this.distance = distance;
 		this.n1 = n1;
 		this.n2 = n2;
 	}
+
+	@Override
+	public int compareTo(NodeDistance o) {
+		double d1 = this.getDistance();
+		double d2 = o.getDistance();
+		if (d1 < d2) return -1;
+		if (d1 > d2) return 1;
+		return 0;
+	}
 	
+	@Override
+	public String toString() {
+		return n1.toString().concat(" - ").concat(n2.toString()).concat(" d: "+ String.valueOf(distance));
+	}
 	
 }
