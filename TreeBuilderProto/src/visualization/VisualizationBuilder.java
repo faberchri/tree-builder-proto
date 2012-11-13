@@ -243,41 +243,43 @@ public class VisualizationBuilder extends JApplet {
 	    private void createTree(Set<Node> movieNodes, Set<Node> userNodes) {
 		 	
 		 	// Build movie Nodes
+	    	String prefix = "movie_";
 			for (Node movieNode : movieNodes) {
 				
 				// Create first Element of Tree
 				String firstID = String.valueOf(movieNode.getId());
-				graph.addVertex(firstID);
+				graph.addVertex(prefix.concat(firstID));
 				
 				// Start recursive build of Tree
-			 	processChildren(movieNode);
+			 	processChildren(movieNode,prefix);
             }
 			
 		 	// Build user Nodes
-//			for (Node userNode : userNodes) {
-//				
-//				// Create first Element of Tree
-//				String firstID = String.valueOf(userNode.getId());
-//				graph.addVertex(firstID);
-//				
-//				// Start recursive build of Tree
-//			 	processChildren(userNode);
-//            }
+	    	prefix = "user_";
+			for (Node userNode : userNodes) {
+				
+				// Create first Element of Tree
+				String firstID = String.valueOf(userNode.getId());
+				graph.addVertex(firstID);
+				
+				// Start recursive build of Tree
+			 	processChildren(userNode,prefix);
+            }
 	       	
 	    }
 	    
-	    private void processChildren(Node parent) {
+	    private void processChildren(Node parent, String prefix) {
 	    	
 	    	//System.out.println("processing visualization...");
 		 	
-	    	String parentID = String.valueOf(parent.getId());
+	    	String parentID = prefix.concat(String.valueOf(parent.getId()));
 	    	Set<Node>children = parent.getChildrenSet();
 	    	
 	    	if(children != null && children.size() > 0){
 		       	for (Node child : children) {
-	        		String childID = String.valueOf(child.getId());
+	        		String childID = prefix.concat(String.valueOf(child.getId()));
 	        		graph.addEdge(edgeFactory.create(),parentID,childID);
-	        		processChildren(child);
+	        		processChildren(child,prefix);
 	        	}
 	    	}
 	    }
