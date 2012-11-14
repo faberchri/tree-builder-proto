@@ -1,9 +1,0 @@
-package clusterer;
-
-import java.util.Set;
-
-public interface Node<T> {
-	public double getDistance(Node otherNode);
-	public T getAttributeValue(Node node);
-	public Set<? extends AbstractNode> getAttributeKeys();
-}
