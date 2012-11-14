@@ -1,4 +1,5 @@
 package clusterer;
+import java.awt.Container;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -7,6 +8,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.swing.JFrame;
+
+import visualization.VisualizationBuilder;
 
 import client.Dataset;
 import client.DatasetItem;
@@ -34,7 +39,7 @@ public final class TreeBuilder<T extends Number> {
 		this.closestNodesSearcher = cns;
 	}
 	
-	public Node cluster() {
+	public Set<Node> cluster() {
 		initLeafNodes(dataset);
 		int cycleCount = 0;
 		long startTime = System.currentTimeMillis();
@@ -56,9 +61,21 @@ public final class TreeBuilder<T extends Number> {
 			cycleCount++;
 		} 
 		
-//		getClosestOpenMovieNodes();
-//		getClosestNodesParallel(movieNodes);
 		return null; // FIXME
+	}
+
+	public void visualize() {
+		
+		// Instantiate VisualizationBuilder
+		VisualizationBuilder vb = new VisualizationBuilder(movieNodes,userNodes);
+		
+		// Swing Visualization
+        JFrame frame = new JFrame();
+        Container content = frame.getContentPane();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        content.add(vb);
+        frame.pack();
+        frame.setVisible(true);
 	}
 	
 		

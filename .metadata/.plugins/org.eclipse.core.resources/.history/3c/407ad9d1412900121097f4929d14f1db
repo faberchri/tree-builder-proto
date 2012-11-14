@@ -1,0 +1,45 @@
+package client;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+
+public class GrouplensDataset<T extends Number> implements Dataset<T> {
+	
+	Map<Integer, List<Integer>> userMap = new HashMap<Integer, List<Integer>>();
+	Map<Integer, List<Integer>> movieMap = new HashMap<Integer, List<Integer>>();
+
+	@Override
+	public ListIterator<List<T>> iterateOverUsers() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ListIterator<List<T>> iterateOverContentItems() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getNumberOfUsers() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getNumberOfContentItems() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
+	public GrouplensDataset(File datasetFile) {
+		// TODO Auto-generated constructor stub
+	}
+	
+	private void parseDataset() {
+		
+	}
+
+}

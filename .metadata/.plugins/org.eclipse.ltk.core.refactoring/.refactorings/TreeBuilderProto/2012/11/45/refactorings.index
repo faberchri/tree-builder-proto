@@ -1,6 +1,7 @@
 1352292137910	Delete element
 1352304854545	Rename type 'Attribute'
 1352336191952	Rename type 'GrouplensDataSet'
+<<<<<<< HEAD
 1352396333298	Rename type 'DatasetItemTypes'
 1352411979416	Delete element
 1352412746145	Move folder
@@ -9,3 +10,5 @@
 1352413186626	Delete element
 1352414004169	Move 'README' to 'Grouplens'
 1352414038616	Delete element
+=======
+>>>>>>> 9f6796bd9f3d344830ba5372778b3d2820cbb08b

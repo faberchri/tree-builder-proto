@@ -2,9 +2,10 @@
 <section name="Workbench">
 	<item value="/Library/Java/JavaVirtualMachines" key="LAST_PATH_SETTING"/>
 	<item value="169" key="org.eclipse.jdt.debug.ui.jre_preference_page_context.columnWidth0"/>
-	<item value="1" key="org.eclipse.jdt.debug.ui.jre_preference_page_context.sortColumn"/>
 	<item value="374" key="org.eclipse.jdt.debug.ui.jre_preference_page_context.columnWidth1"/>
+	<item value="1" key="org.eclipse.jdt.debug.ui.jre_preference_page_context.sortColumn"/>
 	<item value="71" key="org.eclipse.jdt.debug.ui.jre_preference_page_context.columnWidth2"/>
+<<<<<<< HEAD
 	<section name="org.eclipse.jdt.internal.debug.ui.ExpressionInformationControlCreator$ExpressionInformationControl">
 		<item value="500" key="SashWeightDetails"/>
 		<item value="500" key="SashWeightTree"/>
@@ -17,4 +18,8 @@
 		<item value="true" key="uncaughtChecked"/>
 		<item value="true" key="caughtChecked"/>
 	</section>
+=======
+	<section name="conditionHistory">
+	</section>
+>>>>>>> 9f6796bd9f3d344830ba5372778b3d2820cbb08b
 </section>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
+<<<<<<< HEAD
 <fullyQualifiedTypeName name="sun.text.normalizer.UCharacter.NumericType"/>
 <fullyQualifiedTypeName name="java.lang.Number"/>
 <fullyQualifiedTypeName name="clusterer.SimpleAttribute"/>
@@ -30,9 +31,25 @@
 <fullyQualifiedTypeName name="java.lang.Integer"/>
 <fullyQualifiedTypeName name="java.lang.Double"/>
 <fullyQualifiedTypeName name="clusterer.AttributeFactory"/>
+=======
+<fullyQualifiedTypeName name="clusterer.TreeBuilder.PrintableNode"/>
+<fullyQualifiedTypeName name="clusterer.TreeBuilder.AbstractNode"/>
+<fullyQualifiedTypeName name="clusterer.TreeBuilder.UserNode"/>
+<fullyQualifiedTypeName name="clusterer.TreeBuilder.MovieNode"/>
+<fullyQualifiedTypeName name="java.lang.Iterable"/>
+<fullyQualifiedTypeName name="java.util.ListIterator"/>
+<fullyQualifiedTypeName name="client.Dataset"/>
+<fullyQualifiedTypeName name="java.lang.Double"/>
+<fullyQualifiedTypeName name="client.RandomDataset"/>
+<fullyQualifiedTypeName name="java.util.Collections"/>
+<fullyQualifiedTypeName name="java.util.Collection"/>
+<fullyQualifiedTypeName name="java.util.HashSet"/>
+<fullyQualifiedTypeName name="java.util.Iterator"/>
+>>>>>>> 9f6796bd9f3d344830ba5372778b3d2820cbb08b
 <fullyQualifiedTypeName name="clusterer.NodeDistanceCalculator"/>
 <fullyQualifiedTypeName name="clusterer.NodeUpdater"/>
 <fullyQualifiedTypeName name="clusterer.SimpleNodeDistanceCalculator"/>
+<<<<<<< HEAD
 <fullyQualifiedTypeName name="clusterer.SimpleNodeUpdater"/>
 <fullyQualifiedTypeName name="java.util.List"/>
 <fullyQualifiedTypeName name="client.TestDriver"/>
@@ -60,4 +77,36 @@
 <fullyQualifiedTypeName name="clusterer.UserNode"/>
 <fullyQualifiedTypeName name="java.util.HashSet"/>
 <fullyQualifiedTypeName name="java.util.Iterator"/>
+=======
+<fullyQualifiedTypeName name="clusterer.UserNodeFactory"/>
+<fullyQualifiedTypeName name="java.lang.Override"/>
+<fullyQualifiedTypeName name="clusterer.Factory"/>
+<fullyQualifiedTypeName name="clusterer.NodeFactory"/>
+<fullyQualifiedTypeName name="clusterer.UserNode"/>
+<fullyQualifiedTypeName name="java.lang.Comparable"/>
+<fullyQualifiedTypeName name="clusterer.PrintableNode"/>
+<fullyQualifiedTypeName name="clusterer.AbstractNode"/>
+<fullyQualifiedTypeName name="clusterer.NodeIdComparator"/>
+<fullyQualifiedTypeName name="java.lang.Math"/>
+<fullyQualifiedTypeName name="clusterer.SimpleAttributeFactory"/>
+<fullyQualifiedTypeName name="sun.text.normalizer.UCharacter.NumericType"/>
+<fullyQualifiedTypeName name="java.lang.Number"/>
+<fullyQualifiedTypeName name="java.lang.Integer"/>
+<fullyQualifiedTypeName name="clusterer.SimpleAttribute"/>
+<fullyQualifiedTypeName name="clusterer.MovieNode"/>
+<fullyQualifiedTypeName name="clusterer.ContentNodeFactory"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
+<fullyQualifiedTypeName name="clusterer.AttributeFactory"/>
+<fullyQualifiedTypeName name="com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.Collections"/>
+<fullyQualifiedTypeName name="java.util.Arrays"/>
+<fullyQualifiedTypeName name="clusterer.Attribute"/>
+<fullyQualifiedTypeName name="java.util.List"/>
+<fullyQualifiedTypeName name="clusterer.Node"/>
+<fullyQualifiedTypeName name="java.lang.System"/>
+<fullyQualifiedTypeName name="client.GrouplensDataset"/>
+<fullyQualifiedTypeName name="java.util.HashMap"/>
+<fullyQualifiedTypeName name="java.util.Map"/>
+<fullyQualifiedTypeName name="java.lang.ClassLoader"/>
+<fullyQualifiedTypeName name="java.io.File"/>
+>>>>>>> 9f6796bd9f3d344830ba5372778b3d2820cbb08b
 </qualifiedTypeNameHistroy>

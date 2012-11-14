@@ -12,9 +12,11 @@ public interface Node {
 	public void addAttribute(Node node, Attribute attribute);
 	public Attribute getAttributeValue(Node node);
 	public Set<Node> getAttributeKeys();
+	public int getId();
 	public void addChild (Node child);
 	public boolean isChild(Node possibleChild);
 	public Iterator<Node> getChildren();
+	public Set<Node> getChildrenSet();
 	public void setParent(Node parent);
 	public Node getParent();
 	public boolean isLeaf();

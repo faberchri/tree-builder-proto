@@ -75,6 +75,10 @@ public abstract class AbstractNode implements PrintableNode, Comparable<Abstract
 		return children.iterator();
 	}
 	
+	public Set<Node> getChildrenSet() {
+		return children;
+	}
+	
 	@Override
 	public boolean isChild(Node possibleChild) {
 		return children.contains(possibleChild);
